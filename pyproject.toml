@@ -11,9 +11,11 @@ requires-python = ">=3.11"
 [project.optional-dependencies]
 test = ["pytest>=8", "pytest-cov>=5"]
 modeling = ["numpy>=1.26", "scikit-learn>=1.4", "shap>=0.45"]
+laps = ["pandas>=2", "matplotlib>=3.8"]
 
 [project.scripts]
 ev-analyze = "ev_analysis.pipeline:main"
+ev-analyze-laps = "ev_analysis.lap_pipeline:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

@@ -1,0 +1,62 @@
+{
+  "source": "C:\\Users\\ANDR\u00c9S P\u00c9REZ\\Projects\\ResultadosGP_limpios\\datos_limpios\\EIA_clean.csv",
+  "source_sha256": "33cebf917f2008f5f666dc5763f5cfc90d6409222b776ef988f33f75781ade78",
+  "finish_a": [
+    4.954031331051374,
+    -74.02100721093194
+  ],
+  "previous_finish_b": [
+    4.954114777761632,
+    -74.02094657622197
+  ],
+  "confirmed_finish_b": [
+    4.954141279215972,
+    -74.02090858842605
+  ],
+  "previous_segment_length_m": 11.418144078232814,
+  "updated_segment_length_m": 16.354277645927397,
+  "previous_geometric_intersections": 2,
+  "previous_valid_crossings": 1,
+  "previous_complete_intervals": 0,
+  "previous_partial_segments": 2,
+  "total_geometric_intersections": 12,
+  "crossings_after_direction_filter": 11,
+  "valid_crossings": 11,
+  "rejected_crossings": 1,
+  "complete_crossing_to_crossing_intervals": 10,
+  "partial_segments": 2,
+  "plausible_single_lap_intervals": 8,
+  "ambiguous_possible_multiple_lap_intervals": 2,
+  "previous_near_misses": 12,
+  "captured_previous_near_misses": 10,
+  "still_missed_passes": 2,
+  "consecutive_valid_crossing_intervals_s": [
+    109.2433942016074,
+    152.1704288063584,
+    138.7488531102386,
+    285.90125163281004,
+    109.79744450166515,
+    115.28371472638901,
+    121.42082067499837,
+    152.22921814380584,
+    291.5507409281206,
+    130.746438149014
+  ],
+  "all_valid_crossings_same_direction": true,
+  "expected_direction": -1,
+  "minimum_crossing_interval_s": 30,
+  "rearm_distance_m": 50,
+  "independently_verified_interval_and_rearm_rules": true,
+  "partial_start_duration_s": 49.581508051928445,
+  "partial_end_duration_s": 262.66264807306425,
+  "telemetry_label_counts": {
+    "partial_start": 50,
+    "complete": 1604,
+    "partial_end": 263
+  },
+  "geometric_status": "finite_segment_intersects_track_but_still_misses_two_recurring_passes",
+  "physical_single_lap_validation": "incomplete",
+  "efficiency_analysis_run": false,
+  "feature_importance_run": false,
+  "source_preserved": true
+}

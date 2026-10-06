@@ -1,0 +1,470 @@
+{
+  "columns": [
+    "timestamp",
+    "car_velocity",
+    "car_trip",
+    "car_voltage",
+    "car_current",
+    "power",
+    "gps_1",
+    "gps_2",
+    "timestamp_original",
+    "retroceso_detectado",
+    "segmento"
+  ],
+  "rows": 1917,
+  "latitude_range": [
+    4.9540055,
+    4.9553155
+  ],
+  "longitude_range": [
+    -74.021286,
+    -74.01873616
+  ],
+  "finish_length_m": 11.418144078232814,
+  "minimum_trajectory_distance_m": 0,
+  "minimum_sample_distance_m": 0.42585594009153377,
+  "sampling_s": {
+    "min": 1.000903,
+    "median": 1.001459,
+    "max": 1.227965
+  },
+  "maximum_gps_speed_mps": 20.85447500718288,
+  "gps_jump_intervals_over_30_mps": 0,
+  "repeated_gps_pairs": 0,
+  "candidates": [
+    {
+      "index": 1524,
+      "seconds": 1525.8409113343187,
+      "fraction": 0.11700858384636698,
+      "finish_fraction": 0.7821212121826883,
+      "direction": -1,
+      "speed": 40.2627456,
+      "timestamp": "2025-11-07T21:53:26.984071",
+      "interpolated_timestamp": "2025-11-07T21:53:26.100002",
+      "latitude": 4.954096596493553,
+      "longitude": -74.02095978723908,
+      "heading_degrees": 127.80374672008037,
+      "x": 5.259591207146418,
+      "y": 7.217219455480645
+    },
+    {
+      "index": 1662,
+      "seconds": 1664.272103352843,
+      "fraction": 0.3342313427541906,
+      "finish_fraction": 0.32397260235863,
+      "direction": 1,
+      "speed": 10.722269630056648,
+      "timestamp": "2025-11-07T21:55:45.197959",
+      "interpolated_timestamp": "2025-11-07T21:55:44.531194",
+      "latitude": 4.954058365499255,
+      "longitude": -74.02098756694716,
+      "heading_degrees": 265.11300584306656,
+      "x": 2.1786436989306215,
+      "y": 2.9895383635743227
+    }
+  ],
+  "infinite_line_passes": [
+    {
+      "index": 50,
+      "seconds": 49.31636494499399,
+      "finish_fraction": 1.0394445314334633,
+      "direction": -1,
+      "distance_beyond_segment_m": 0.45038334300566674,
+      "speed": 16.10509824
+    },
+    {
+      "index": 90,
+      "seconds": 89.88145839969516,
+      "finish_fraction": 2.5561210366327045,
+      "direction": 1,
+      "distance_beyond_segment_m": 17.76801419944122,
+      "speed": 38.162170538533026
+    },
+    {
+      "index": 100,
+      "seconds": 100.1524311002689,
+      "finish_fraction": 10.054438158394555,
+      "direction": -1,
+      "distance_beyond_segment_m": 103.38487943999802,
+      "speed": 48.28251593890574
+    },
+    {
+      "index": 144,
+      "seconds": 143.5920965103485,
+      "finish_fraction": 12.15808861680627,
+      "direction": 1,
+      "distance_beyond_segment_m": 127.40466346438348,
+      "speed": 40.2627456
+    },
+    {
+      "index": 159,
+      "seconds": 158.7262739962281,
+      "finish_fraction": 1.006361383146093,
+      "direction": -1,
+      "distance_beyond_segment_m": 0.07263518929893083,
+      "speed": 44.80289754681262
+    },
+    {
+      "index": 206,
+      "seconds": 206.29996604232628,
+      "finish_fraction": 2.6228149721215326,
+      "direction": 1,
+      "distance_beyond_segment_m": 18.529535163997025,
+      "speed": 32.72682510629943
+    },
+    {
+      "index": 216,
+      "seconds": 216.3373577982138,
+      "finish_fraction": 10.070177120899118,
+      "direction": -1,
+      "distance_beyond_segment_m": 103.56458918151701,
+      "speed": 40.2627456
+    },
+    {
+      "index": 277,
+      "seconds": 277.42469184029477,
+      "finish_fraction": 12.309582216674881,
+      "direction": 1,
+      "distance_beyond_segment_m": 129.13443921461345,
+      "speed": 16.537664475844913
+    },
+    {
+      "index": 311,
+      "seconds": 310.68948021818863,
+      "finish_fraction": 1.2379042565200156,
+      "direction": -1,
+      "distance_beyond_segment_m": 2.716425077770396,
+      "speed": 16.10509824
+    },
+    {
+      "index": 371,
+      "seconds": 370.8802215540762,
+      "finish_fraction": 2.599759081161691,
+      "direction": 1,
+      "distance_beyond_segment_m": 18.266279679165528,
+      "speed": 24.157647359999995
+    },
+    {
+      "index": 385,
+      "seconds": 385.3161470961566,
+      "finish_fraction": 10.029319647653924,
+      "direction": -1,
+      "distance_beyond_segment_m": 103.09807266533086,
+      "speed": 29.627096506793894
+    },
+    {
+      "index": 432,
+      "seconds": 432.6369768419127,
+      "finish_fraction": 12.23637019797324,
+      "direction": 1,
+      "distance_beyond_segment_m": 128.29849383681983,
+      "speed": 39.6214060166284
+    },
+    {
+      "index": 449,
+      "seconds": 449.6250029677276,
+      "finish_fraction": 1.0538934540640357,
+      "direction": -1,
+      "distance_beyond_segment_m": 0.6153632233767811,
+      "speed": 40.2627456
+    },
+    {
+      "index": 490,
+      "seconds": 490.7850114104451,
+      "finish_fraction": 2.497927675721052,
+      "direction": 1,
+      "distance_beyond_segment_m": 17.10355402015537,
+      "speed": 40.2627456
+    },
+    {
+      "index": 500,
+      "seconds": 500.5449685414695,
+      "finish_fraction": 9.92801706242098,
+      "direction": -1,
+      "distance_beyond_segment_m": 101.94138515164363,
+      "speed": 40.2627456
+    },
+    {
+      "index": 556,
+      "seconds": 556.5922307495898,
+      "finish_fraction": 12.379042389772392,
+      "direction": 1,
+      "distance_beyond_segment_m": 129.9275454787398,
+      "speed": 16.10509824
+    },
+    {
+      "index": 593,
+      "seconds": 593.2440363543974,
+      "finish_fraction": 1.4604927620310209,
+      "direction": -1,
+      "distance_beyond_segment_m": 5.257972703853573,
+      "speed": 17.978472911043333
+    },
+    {
+      "index": 666,
+      "seconds": 666.5013232359345,
+      "finish_fraction": 2.5804728826265237,
+      "direction": 1,
+      "distance_beyond_segment_m": 18.046067085569586,
+      "speed": 35.25846985690009
+    },
+    {
+      "index": 676,
+      "seconds": 676.2300446997954,
+      "finish_fraction": 9.750639175380869,
+      "direction": -1,
+      "distance_beyond_segment_m": 99.91605888112714,
+      "speed": 33.70792998548942
+    },
+    {
+      "index": 719,
+      "seconds": 719.9956937740596,
+      "finish_fraction": 12.23240520100611,
+      "direction": 1,
+      "distance_beyond_segment_m": 128.25322093017937,
+      "speed": 40.2627456
+    },
+    {
+      "index": 735,
+      "seconds": 735.5306314888438,
+      "finish_fraction": 1.133388169305695,
+      "direction": -1,
+      "distance_beyond_segment_m": 1.5230453354641382,
+      "speed": 45.873493694701466
+    },
+    {
+      "index": 775,
+      "seconds": 775.8401215715004,
+      "finish_fraction": 2.4762131392338045,
+      "direction": 1,
+      "distance_beyond_segment_m": 16.855614313951936,
+      "speed": 40.2627456
+    },
+    {
+      "index": 785,
+      "seconds": 785.4750438648618,
+      "finish_fraction": 10.002508762325345,
+      "direction": -1,
+      "distance_beyond_segment_m": 102.79194211378416,
+      "speed": 41.65738175288495
+    },
+    {
+      "index": 829,
+      "seconds": 829.8013008625868,
+      "finish_fraction": 12.237764585808375,
+      "direction": 1,
+      "distance_beyond_segment_m": 128.3144151580223,
+      "speed": 40.2627456
+    },
+    {
+      "index": 844,
+      "seconds": 845.3271901050639,
+      "finish_fraction": 1.153574853759315,
+      "direction": -1,
+      "distance_beyond_segment_m": 1.7535398070173918,
+      "speed": 47.28302243493741
+    },
+    {
+      "index": 885,
+      "seconds": 885.7776935031678,
+      "finish_fraction": 2.449677876481173,
+      "direction": 1,
+      "distance_beyond_segment_m": 16.552630860688623,
+      "speed": 40.2627456
+    },
+    {
+      "index": 895,
+      "seconds": 896.1019079996876,
+      "finish_fraction": 10.31554277160894,
+      "direction": -1,
+      "distance_beyond_segment_m": 106.3662095331711,
+      "speed": 43.372286749442154
+    },
+    {
+      "index": 942,
+      "seconds": 943.689731332307,
+      "finish_fraction": 12.277169420680927,
+      "direction": 1,
+      "distance_beyond_segment_m": 128.7643452399761,
+      "speed": 32.21019648
+    },
+    {
+      "index": 959,
+      "seconds": 960.618144244128,
+      "finish_fraction": 1.0590833305985565,
+      "direction": -1,
+      "distance_beyond_segment_m": 0.6746219813961798,
+      "speed": 40.2627456
+    },
+    {
+      "index": 1000,
+      "seconds": 1001.5052812702593,
+      "finish_fraction": 2.4887646561712744,
+      "direction": 1,
+      "distance_beyond_segment_m": 16.998929342744347,
+      "speed": 35.22576260146058
+    },
+    {
+      "index": 1013,
+      "seconds": 1014.0552392822387,
+      "finish_fraction": 10.131935396850414,
+      "direction": -1,
+      "distance_beyond_segment_m": 104.26975407435218,
+      "speed": 24.157647359999995
+    },
+    {
+      "index": 1065,
+      "seconds": 1066.2647071343217,
+      "finish_fraction": 12.30405818153819,
+      "direction": 1,
+      "distance_beyond_segment_m": 129.07136498552947,
+      "speed": 40.2627456
+    },
+    {
+      "index": 1081,
+      "seconds": 1082.015538331896,
+      "finish_fraction": 1.2224265083807808,
+      "direction": -1,
+      "distance_beyond_segment_m": 2.539697919510014,
+      "speed": 40.30210194006281
+    },
+    {
+      "index": 1130,
+      "seconds": 1131.4076604442757,
+      "finish_fraction": 2.510565117874346,
+      "direction": 1,
+      "distance_beyond_segment_m": 17.247850155442016,
+      "speed": 24.157647359999995
+    },
+    {
+      "index": 1143,
+      "seconds": 1144.9622671305665,
+      "finish_fraction": 9.68368941643497,
+      "direction": -1,
+      "distance_beyond_segment_m": 99.1516168874799,
+      "speed": 30.78551446359957
+    },
+    {
+      "index": 1207,
+      "seconds": 1208.9440181955242,
+      "finish_fraction": 12.388846398241913,
+      "direction": 1,
+      "distance_beyond_segment_m": 130.03948905998902,
+      "speed": 20.925746058624338
+    },
+    {
+      "index": 1232,
+      "seconds": 1234.221861034501,
+      "finish_fraction": 1.3315370078610969,
+      "direction": -1,
+      "distance_beyond_segment_m": 3.785537323024209,
+      "speed": 32.698706113261636
+    },
+    {
+      "index": 1275,
+      "seconds": 1276.4541931354713,
+      "finish_fraction": 2.4644830443128836,
+      "direction": 1,
+      "distance_beyond_segment_m": 16.721678400093516,
+      "speed": 33.115087046101614
+    },
+    {
+      "index": 1284,
+      "seconds": 1286.2870540051051,
+      "finish_fraction": 9.999634076886158,
+      "direction": -1,
+      "distance_beyond_segment_m": 102.75911854125992,
+      "speed": 47.75197639225677
+    },
+    {
+      "index": 1348,
+      "seconds": 1349.5774049360887,
+      "finish_fraction": 12.258099807325973,
+      "direction": 1,
+      "distance_beyond_segment_m": 128.54660564717304,
+      "speed": 15.101809277680623
+    },
+    {
+      "index": 1406,
+      "seconds": 1408.5479068732402,
+      "finish_fraction": 1.4738024561630774,
+      "direction": -1,
+      "distance_beyond_segment_m": 5.409944709090604,
+      "speed": 8.05254912
+    },
+    {
+      "index": 1453,
+      "seconds": 1454.7692225571407,
+      "finish_fraction": 2.5391389855284525,
+      "direction": 1,
+      "distance_beyond_segment_m": 17.57411069318896,
+      "speed": 39.05230398761816
+    },
+    {
+      "index": 1463,
+      "seconds": 1464.7324694028075,
+      "finish_fraction": 9.739230156355454,
+      "direction": -1,
+      "distance_beyond_segment_m": 99.78578905810366,
+      "speed": 47.52040786750941
+    },
+    {
+      "index": 1509,
+      "seconds": 1510.7413375590515,
+      "finish_fraction": 11.018780767962465,
+      "direction": 1,
+      "distance_beyond_segment_m": 114.39588229682342,
+      "speed": 40.2627456
+    },
+    {
+      "index": 1524,
+      "seconds": 1525.8409113343187,
+      "finish_fraction": 0.7821212121826883,
+      "direction": -1,
+      "distance_beyond_segment_m": 0.0,
+      "speed": 40.2627456
+    },
+    {
+      "index": 1564,
+      "seconds": 1565.8229578050316,
+      "finish_fraction": 2.3215766617514224,
+      "direction": 1,
+      "distance_beyond_segment_m": 15.089952734307694,
+      "speed": 39.96306522095943
+    },
+    {
+      "index": 1574,
+      "seconds": 1576.0535997460527,
+      "finish_fraction": 9.502745020337139,
+      "direction": -1,
+      "distance_beyond_segment_m": 97.08556770268605,
+      "speed": 40.2627456
+    },
+    {
+      "index": 1621,
+      "seconds": 1623.571690839216,
+      "finish_fraction": 12.25917898614782,
+      "direction": 1,
+      "distance_beyond_segment_m": 128.55892786644708,
+      "speed": 34.6324060146021
+    },
+    {
+      "index": 1654,
+      "seconds": 1656.1039100333396,
+      "finish_fraction": 1.3417590465535267,
+      "direction": -1,
+      "distance_beyond_segment_m": 3.902254033587644,
+      "speed": 14.670098072303599
+    },
+    {
+      "index": 1662,
+      "seconds": 1664.272103352843,
+      "finish_fraction": 0.32397260235863,
+      "direction": 1,
+      "distance_beyond_segment_m": 0.0,
+      "speed": 10.722269630056648
+    }
+  ],
+  "source_sha256": "33cebf917f2008f5f666dc5763f5cfc90d6409222b776ef988f33f75781ade78"
+}

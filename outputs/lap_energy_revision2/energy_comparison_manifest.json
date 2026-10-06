@@ -1,0 +1,54 @@
+{
+  "source": "C:\\Users\\ANDR\u00c9S P\u00c9REZ\\Projects\\ResultadosGP_limpios\\datos_limpios\\EIA_clean.csv",
+  "source_sha256": "33cebf917f2008f5f666dc5763f5cfc90d6409222b776ef988f33f75781ade78",
+  "finish_a": [
+    4.954031331051374,
+    -74.02100721093194
+  ],
+  "finish_b": [
+    4.954155352342866,
+    -74.02092561319948
+  ],
+  "complete_crossing_to_crossing_intervals": 10,
+  "plausible_single_laps": 8,
+  "ambiguous_intervals": [
+    4,
+    9
+  ],
+  "partial_segments_excluded": 2,
+  "correlation_all_intervals": {
+    "n": 10,
+    "pearson": -0.10474760077650488,
+    "spearman": -0.5878787878787878
+  },
+  "correlation_excluding_ambiguous": {
+    "n": 8,
+    "pearson": -0.894840753500956,
+    "spearman": -0.9761904761904763
+  },
+  "pareto_single_laps": [
+    1,
+    2,
+    3,
+    5,
+    7,
+    8,
+    10
+  ],
+  "pareto_all_intervals": [
+    1,
+    2,
+    3,
+    5,
+    7,
+    8,
+    10
+  ],
+  "energy_policy": "validated intervals; clip original endpoint power at zero; trapezoids over actual dt; matched trip support",
+  "fastest_lap": 1,
+  "most_efficient_lap": 8,
+  "importance_modeling_run": false,
+  "complete_interval_consumed_wh": 188.42849479735457,
+  "energy_distance_partition_verified": true,
+  "source_preserved": true
+}

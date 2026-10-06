@@ -1,0 +1,73 @@
+{
+  "source": "C:\\Users\\ANDR\u00c9S P\u00c9REZ\\Projects\\ResultadosGP_limpios\\datos_limpios\\EIA_clean.csv",
+  "source_sha256": "33cebf917f2008f5f666dc5763f5cfc90d6409222b776ef988f33f75781ade78",
+  "finish_a": [
+    4.954031331051374,
+    -74.02100721093194
+  ],
+  "previous_finish_b": [
+    4.954141279215972,
+    -74.02090858842605
+  ],
+  "confirmed_finish_b": [
+    4.954155352342866,
+    -74.02092561319948
+  ],
+  "previous_segment_length_m": 16.354277645927397,
+  "updated_segment_length_m": 16.43128994845964,
+  "previous_geometric_intersections": 12,
+  "previous_valid_crossings": 11,
+  "previous_complete_intervals": 10,
+  "previous_partial_segments": 2,
+  "total_geometric_intersections": 12,
+  "crossings_after_direction_filter": 11,
+  "valid_crossings": 11,
+  "rejected_crossings": 1,
+  "complete_crossing_to_crossing_intervals": 10,
+  "partial_segments": 2,
+  "plausible_single_lap_intervals": 8,
+  "ambiguous_possible_multiple_lap_intervals": 2,
+  "previous_near_misses": 2,
+  "captured_previous_near_misses": 0,
+  "still_missed_passes": 2,
+  "consecutive_valid_crossing_intervals_s": [
+    109.48381265333946,
+    151.86931848660166,
+    139.01914574842772,
+    285.9089197523016,
+    109.79560458410083,
+    115.29407147071049,
+    121.38654036642083,
+    152.19758072336845,
+    291.6491083589108,
+    130.03818561866956
+  ],
+  "all_valid_crossings_same_direction": true,
+  "expected_direction": -1,
+  "minimum_crossing_interval_s": 30,
+  "rearm_distance_m": 50,
+  "independently_verified_interval_and_rearm_rules": true,
+  "median_lap_time_s": 134.52866568354864,
+  "minimum_lap_time_s": 109.48381265333946,
+  "maximum_lap_time_s": 291.6491083589108,
+  "median_trip_lap_distance_km": 1.215923605948964,
+  "median_gps_lap_distance_km": 1.1541627018970884,
+  "anomalous_lap_numbers": [
+    4,
+    9
+  ],
+  "anomaly_time_upper_iqr_fence_s": 205.06300486848474,
+  "anomaly_distance_upper_iqr_fence_km": 1.2416564492218318,
+  "partial_start_duration_s": 49.197655824169445,
+  "partial_end_duration_s": 263.4965174129793,
+  "telemetry_label_counts": {
+    "partial_start": 50,
+    "complete": 1603,
+    "partial_end": 264
+  },
+  "geometric_status": "recurring_passes_still_missed",
+  "physical_single_lap_validation": "incomplete",
+  "efficiency_analysis_run": false,
+  "feature_importance_run": false,
+  "source_preserved": true
+}

@@ -1,0 +1,38 @@
+{
+  "source": "C:\\Users\\ANDR\u00c9S P\u00c9REZ\\Projects\\ResultadosGP_limpios\\datos_limpios\\EIA_clean.csv",
+  "source_sha256": "33cebf917f2008f5f666dc5763f5cfc90d6409222b776ef988f33f75781ade78",
+  "source_preserved": true,
+  "finish_a": [
+    4.954031331051374,
+    -74.02100721093194
+  ],
+  "finish_b": [
+    4.954114777761632,
+    -74.02094657622197
+  ],
+  "expected_direction": -1,
+  "direction_confirmed": false,
+  "minimum_crossing_interval_s": 30,
+  "rearm_distance_m": 50,
+  "max_gps_speed_mps": 30,
+  "high_power_w": 800,
+  "high_current_a": 20,
+  "accounting_config": {
+    "max_gap_s": 5.0,
+    "moving_threshold_kmh": 1.0,
+    "minimum_voltage_v": 1.0,
+    "shutdown_voltage_v": 10.0,
+    "window_s": 60.0,
+    "minimum_window_coverage": 0.9,
+    "acceleration_threshold_mps2": 0.5,
+    "seed": 42
+  },
+  "complete_laps": 0,
+  "modeling_status": "not_run",
+  "lap_validation_status": "pending_finish_geometry_and_direction_confirmation",
+  "python": "3.13.16",
+  "packages": {
+    "pandas": "3.0.6",
+    "matplotlib": "3.11.2"
+  }
+}

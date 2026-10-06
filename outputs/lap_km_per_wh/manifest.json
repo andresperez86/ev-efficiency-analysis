@@ -1,0 +1,111 @@
+{
+  "source": "C:\\Users\\ANDR\u00c9S P\u00c9REZ\\Projects\\ResultadosGP_limpios\\datos_limpios\\EIA_clean.csv",
+  "source_sha256": "33cebf917f2008f5f666dc5763f5cfc90d6409222b776ef988f33f75781ade78",
+  "finish_a": [
+    4.954031331051374,
+    -74.02100721093194
+  ],
+  "finish_b": [
+    4.954155352342866,
+    -74.02092561319948
+  ],
+  "expected_lap_distance_km": 1.21,
+  "distance_tolerance_pct": 10.0,
+  "predefined_lap_count": null,
+  "geometric_crossings": 12,
+  "valid_crossings": 11,
+  "complete_crossing_intervals": 10,
+  "validated_single_laps": 8,
+  "valid_interval_ids": [
+    1,
+    2,
+    3,
+    5,
+    6,
+    7,
+    8,
+    10
+  ],
+  "distance_inconsistent_interval_ids": [
+    4,
+    9
+  ],
+  "partial_segments": 2,
+  "total_physical_race_lap_count": "unresolved_due_to_missing_finish_crossings",
+  "mean_lap_distance_km": 1.2139086916369102,
+  "median_lap_distance_km": 1.2136253235121512,
+  "mean_gps_distance_km": 1.1514054509745475,
+  "median_gps_distance_km": 1.151792627185765,
+  "pearson_lap_time_vs_km_per_Wh": 0.9032285320290722,
+  "spearman_lap_time_vs_km_per_Wh": 0.9761904761904763,
+  "fastest_lap": 1,
+  "most_efficient_lap": 8,
+  "least_efficient_lap": 1,
+  "pareto_laps": [
+    1,
+    2,
+    3,
+    5,
+    7,
+    8,
+    10
+  ],
+  "rankings": {
+    "highest_km_per_Wh": [
+      8,
+      2,
+      3,
+      10,
+      7,
+      5,
+      6,
+      1
+    ],
+    "fastest_lap": [
+      1,
+      5,
+      6,
+      7,
+      10,
+      3,
+      2,
+      8
+    ],
+    "lowest_Wh_per_km": [
+      8,
+      2,
+      3,
+      10,
+      7,
+      5,
+      6,
+      1
+    ],
+    "lowest_energy_Wh": [
+      8,
+      2,
+      3,
+      7,
+      10,
+      5,
+      6,
+      1
+    ]
+  },
+  "trip_distance_valid_ids_at_5pct": [
+    1,
+    2,
+    3,
+    5,
+    6,
+    7,
+    8,
+    10
+  ],
+  "importance_modeling_run": false,
+  "near_fastest_compromise_lap": 5,
+  "compromise_extra_time_s": 0.31179193076137324,
+  "compromise_km_per_Wh_improvement_pct": 18.1054450798243,
+  "compromise_Wh_per_km_reduction_pct": 15.32989869145095,
+  "source_preserved": true
+}

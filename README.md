@@ -4,6 +4,89 @@ Auditable exploratory analysis of EIA racing telemetry. Analysis runs without
 GUI dependencies; the future Qt interface will consume the same result files.
 Original data is never edited or copied over.
 
+## Lap analysis
+
+Current primary lap-efficiency analysis: `outputs/lap_km_per_wh/`, using
+**km/Wh (higher is better)** and reciprocal Wh/km. Expected single-lap length
+is approximately 1.21 km; actual measured distances are retained. Fresh detection
+produces ten bounded intervals; eight satisfy the declared exploratory ±10%
+trip/GPS distance screen, while double-length intervals 4/9 and partial segments
+are excluded from every ranking. The same eight pass a ±5% trip screen. This
+derived count is not an assumed eight-lap race: full physical lap count remains
+unresolved where finish crossings were missed. Mean/median accepted single-lap
+trip distance is 1.213909/1.213625 km. Validation, all required metrics, four
+rankings and a time-versus-km/Wh Pareto plot are reproducible using
+`scripts/compare_laps_km_per_wh.py` with `PYTHONPATH=src` in the virtual environment.
+Previous Wh/km-primary reports below are historical.
+
+Energy/pace comparison for the current exact finish geometry is now available
+in `outputs/lap_energy_revision2/`: a complete metric table, energy/time rankings,
+Pareto scatter and report. Intervals 4 and 9 remain geometrically ambiguous;
+primary single-lap rankings exclude them, while separate all-interval rankings
+and correlations retain them. No crossing or accounting policy changed.
+With `PYTHONPATH=src`, reproduce using
+`.venv\Scripts\python.exe scripts/analyze_lap_energy.py`.
+
+Current endpoint B is now `(4.954155352342866, -74.02092561319948)`.
+The second detection-only revision is in `outputs/lap_validation_revision2/`:
+12 intersections, 11 valid crossings, 10 crossing-to-crossing intervals and
+two partial segments. Two passes still miss beyond B by 0.321/0.480 m;
+intervals 4 and 9 remain ambiguous possible multiple-lap intervals.
+The validation script now compares against the immediately preceding B.
+Current timing/distance statistics and both source/interpolated timestamps
+are in that revision's report and `crossing_lap_validation.csv`.
+Efficiency and modeling remain pending physical lap validation.
+
+Previous detection-only validation (first confirmed endpoint B revision, 2026-10-06):
+the updated segment gives 11 valid crossings and one rejected reverse candidate.
+It captures 10 of 12 prior near misses; two still miss beyond B by 0.283/0.375 m.
+There are 10 crossing-to-crossing intervals, including two ambiguous possible
+multiple-lap intervals, and two partial segments. Current validation artifacts
+are in `outputs/lap_validation/`; the efficiency exports below describe the
+previous geometry and were not rerun. See
+`outputs/lap_validation/lap_detection_validation.md` and
+`crossing_lap_validation.csv`. With `PYTHONPATH=src`, reproduce detection-only
+validation using `.venv\Scripts\python.exe scripts/validate_finish_geometry.py`.
+Detector rules and energy accounting were not changed.
+
+The finite finish segment supplied on 2026-10-06 is implemented in
+`src/ev_analysis/laps.py`. The detector uses WGS84 local east/north coordinates,
+directed finite-segment intersections, interpolated crossing timestamps, a
+30-second minimum crossing interval, and 50-meter spatial rearming. It rejects
+stationary crossings, line touches, wrong direction, excessive GPS speed and gaps.
+Only consecutive accepted crossings bound complete laps; recording edges remain
+explicit partial segments. Energy uses the existing validated accounting support.
+
+```powershell
+.venv\Scripts\python.exe -m pip install -e '.[test,laps]'
+$env:PYTHONPATH = 'src'
+.venv\Scripts\python.exe -m ev_analysis.lap_pipeline --source 'C:\Users\ANDRÉS PÉREZ\Projects\ResultadosGP_limpios\datos_limpios\EIA_clean.csv' --output outputs
+.venv\Scripts\python.exe -m pytest -q -p no:cacheprovider
+```
+
+Current result: **zero complete laps** with exact A–B. Twelve recurring passes
+miss just beyond endpoint B; two actual intersections run in opposite directions.
+The inferred race direction (`--direction -1`, left to right relative to A→B)
+has one accepted crossing. This direction still needs independent confirmation.
+No endpoint extension or proximity tolerance is applied. Corrected endpoints can
+be passed as `--finish-a LAT LON --finish-b LAT LON`; inspect them before use.
+
+Exports: `outputs/lap_crossings.csv`, `outputs/lap_summary.csv`,
+`outputs/telemetry_with_laps.csv`, seven lap PNGs under `outputs/figures`, and
+`outputs/reports/lap_detection_report.md`, `lap_efficiency_report.md`,
+`lap_manifest.json`. `run_lap_analysis()` returns a pandas lap-level DataFrame.
+Plots explicitly show unavailable comparisons when no complete laps exist.
+Lap importance models remain gated by reconstruction validation. High-power
+and high-current duration are descriptive measures, excluded from explanatory
+models because they derive from the energy target channels.
+
+The independent preimplementation inspection is reproducible with
+`.venv\Scripts\python.exe scripts/inspect_lap_geometry.py`. It writes candidate
+diagnostics and the geometry plot; rerun the lap pipeline afterward to restore
+its validated-crossing report. Original baseline artifacts and their recorded
+dependency status are historical; the lap environment now includes pandas and
+Matplotlib, with versions recorded in the lap manifest.
+
 ## Reproduce the analysis
 
 From this project directory in Windows PowerShell, with Python 3.11+:

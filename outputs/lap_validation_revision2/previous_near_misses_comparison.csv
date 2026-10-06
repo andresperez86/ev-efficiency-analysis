@@ -1,0 +1,3 @@
+previous_miss_number,previous_source_row,previous_elapsed_s,previous_distance_beyond_b_m,updated_elapsed_s,updated_finish_fraction,updated_distance_beyond_b_m,geometric_intersection,accepted,crossing_id,reason
+1,595,593.5730629952291,0.2831082879242586,593.0940586412202,1.0195144353236238,0.32064734498292624,False,False,,outside_finite_finish_segment
+2,1409,1409.3003387718868,0.3745670183699554,1408.1804976154094,1.02920798545221,0.4799248777756542,False,False,,outside_finite_finish_segment
