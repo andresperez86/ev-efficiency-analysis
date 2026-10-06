@@ -1,0 +1,434 @@
+{
+  "efficient_quartile_medians": {
+    "acceleration_pct": 25.035970000000038,
+    "average_speed_kmh": 30.633853621916163,
+    "speed_std_kmh": 6.410388284361813,
+    "stopped_pct": 0.0,
+    "wh_per_km": 9.84788375635255
+  },
+  "eligible_count": 29,
+  "fastest_period": 1,
+  "inefficient_quartile_medians": {
+    "acceleration_pct": 20.053365000000365,
+    "average_speed_kmh": 22.681641679716094,
+    "speed_std_kmh": 6.072653845125858,
+    "stopped_pct": 0.0,
+    "wh_per_km": 16.017871699848722
+  },
+  "least_efficient_period": 0,
+  "most_efficient_period": 28,
+  "pace_matched_pairs_2kmh": [
+    {
+      "difference_wh_per_km": 6.437645921609976,
+      "efficient_period": 16,
+      "inefficient_period": 17,
+      "speed_difference_kmh": 0.18573298877069533
+    },
+    {
+      "difference_wh_per_km": 5.3305938841464435,
+      "efficient_period": 16,
+      "inefficient_period": 15,
+      "speed_difference_kmh": 0.4128828489632639
+    },
+    {
+      "difference_wh_per_km": 4.936828921106882,
+      "efficient_period": 21,
+      "inefficient_period": 17,
+      "speed_difference_kmh": -0.7803527374424135
+    },
+    {
+      "difference_wh_per_km": 4.826780246314778,
+      "efficient_period": 10,
+      "inefficient_period": 4,
+      "speed_difference_kmh": 1.9719054627550463
+    },
+    {
+      "difference_wh_per_km": 4.101715308341527,
+      "efficient_period": 18,
+      "inefficient_period": 3,
+      "speed_difference_kmh": 1.019366228793924
+    },
+    {
+      "difference_wh_per_km": 3.9630124999820193,
+      "efficient_period": 14,
+      "inefficient_period": 11,
+      "speed_difference_kmh": -0.2163768263838577
+    },
+    {
+      "difference_wh_per_km": 3.9379394641307233,
+      "efficient_period": 16,
+      "inefficient_period": 26,
+      "speed_difference_kmh": 1.775176873312482
+    },
+    {
+      "difference_wh_per_km": 3.8297768836433494,
+      "efficient_period": 21,
+      "inefficient_period": 15,
+      "speed_difference_kmh": -0.553202877249845
+    },
+    {
+      "difference_wh_per_km": 3.61880430239208,
+      "efficient_period": 23,
+      "inefficient_period": 4,
+      "speed_difference_kmh": 0.6780622352073316
+    },
+    {
+      "difference_wh_per_km": 3.4136445071119876,
+      "efficient_period": 1,
+      "inefficient_period": 11,
+      "speed_difference_kmh": -0.7910299971244257
+    },
+    {
+      "difference_wh_per_km": 3.3182477361702105,
+      "efficient_period": 9,
+      "inefficient_period": 22,
+      "speed_difference_kmh": -1.962971239909832
+    },
+    {
+      "difference_wh_per_km": 2.929158030766848,
+      "efficient_period": 21,
+      "inefficient_period": 8,
+      "speed_difference_kmh": 1.25037911774222
+    },
+    {
+      "difference_wh_per_km": 2.8702270381164627,
+      "efficient_period": 18,
+      "inefficient_period": 20,
+      "speed_difference_kmh": -1.2409059981498771
+    },
+    {
+      "difference_wh_per_km": 2.5603510949475776,
+      "efficient_period": 14,
+      "inefficient_period": 12,
+      "speed_difference_kmh": -0.26828711455390675
+    },
+    {
+      "difference_wh_per_km": 2.501439061045563,
+      "efficient_period": 18,
+      "inefficient_period": 6,
+      "speed_difference_kmh": 0.4445231323527885
+    },
+    {
+      "difference_wh_per_km": 2.4997064574792525,
+      "efficient_period": 26,
+      "inefficient_period": 17,
+      "speed_difference_kmh": -1.5894438845417866
+    },
+    {
+      "difference_wh_per_km": 2.437122463627629,
+      "efficient_period": 21,
+      "inefficient_period": 26,
+      "speed_difference_kmh": 0.8090911470993731
+    },
+    {
+      "difference_wh_per_km": 2.3101280340397974,
+      "efficient_period": 2,
+      "inefficient_period": 11,
+      "speed_difference_kmh": -0.4781740560790908
+    },
+    {
+      "difference_wh_per_km": 2.295866281008742,
+      "efficient_period": 14,
+      "inefficient_period": 13,
+      "speed_difference_kmh": -0.0003202230366667891
+    },
+    {
+      "difference_wh_per_km": 2.266287838078302,
+      "efficient_period": 7,
+      "inefficient_period": 11,
+      "speed_difference_kmh": 0.8621000425860501
+    },
+    {
+      "difference_wh_per_km": 2.216449550352893,
+      "efficient_period": 14,
+      "inefficient_period": 25,
+      "speed_difference_kmh": -1.1106705821009584
+    },
+    {
+      "difference_wh_per_km": 2.1265320346568277,
+      "efficient_period": 14,
+      "inefficient_period": 24,
+      "speed_difference_kmh": -1.2017832445865153
+    },
+    {
+      "difference_wh_per_km": 2.010983102077546,
+      "efficient_period": 1,
+      "inefficient_period": 12,
+      "speed_difference_kmh": -0.8429402852944747
+    },
+    {
+      "difference_wh_per_km": 1.8364804653251916,
+      "efficient_period": 24,
+      "inefficient_period": 11,
+      "speed_difference_kmh": 0.9854064182026576
+    },
+    {
+      "difference_wh_per_km": 1.7465629496291264,
+      "efficient_period": 25,
+      "inefficient_period": 11,
+      "speed_difference_kmh": 0.8942937557171007
+    },
+    {
+      "difference_wh_per_km": 1.74649828813871,
+      "efficient_period": 1,
+      "inefficient_period": 13,
+      "speed_difference_kmh": -0.5749733937772348
+    },
+    {
+      "difference_wh_per_km": 1.7349695824895832,
+      "efficient_period": 27,
+      "inefficient_period": 22,
+      "speed_difference_kmh": 0.2512415178663119
+    },
+    {
+      "difference_wh_per_km": 1.6967246619037173,
+      "efficient_period": 14,
+      "inefficient_period": 7,
+      "speed_difference_kmh": -1.0784768689699078
+    },
+    {
+      "difference_wh_per_km": 1.6671462189732775,
+      "efficient_period": 13,
+      "inefficient_period": 11,
+      "speed_difference_kmh": -0.2160566033471909
+    },
+    {
+      "difference_wh_per_km": 1.6670815574828612,
+      "efficient_period": 1,
+      "inefficient_period": 25,
+      "speed_difference_kmh": -1.6853237528415264
+    },
+    {
+      "difference_wh_per_km": 1.652884465942222,
+      "efficient_period": 14,
+      "inefficient_period": 2,
+      "speed_difference_kmh": 0.2617972296952331
+    },
+    {
+      "difference_wh_per_km": 1.6002762472959642,
+      "efficient_period": 6,
+      "inefficient_period": 3,
+      "speed_difference_kmh": 0.5748430964411355
+    },
+    {
+      "difference_wh_per_km": 1.577164041786796,
+      "efficient_period": 1,
+      "inefficient_period": 24,
+      "speed_difference_kmh": -1.7764364153270833
+    },
+    {
+      "difference_wh_per_km": 1.500817000503094,
+      "efficient_period": 16,
+      "inefficient_period": 21,
+      "speed_difference_kmh": 0.9660857262131088
+    },
+    {
+      "difference_wh_per_km": 1.4288891515119868,
+      "efficient_period": 8,
+      "inefficient_period": 11,
+      "speed_difference_kmh": 1.8938790689347513
+    },
+    {
+      "difference_wh_per_km": 1.4026614050344417,
+      "efficient_period": 12,
+      "inefficient_period": 11,
+      "speed_difference_kmh": 0.05191028817004906
+    },
+    {
+      "difference_wh_per_km": 1.3926544200157203,
+      "efficient_period": 26,
+      "inefficient_period": 15,
+      "speed_difference_kmh": -1.362294024349218
+    },
+    {
+      "difference_wh_per_km": 1.2079759439226976,
+      "efficient_period": 10,
+      "inefficient_period": 23,
+      "speed_difference_kmh": 1.2938432275477147
+    },
+    {
+      "difference_wh_per_km": 1.1473566690336856,
+      "efficient_period": 1,
+      "inefficient_period": 7,
+      "speed_difference_kmh": -1.6531300397104758
+    },
+    {
+      "difference_wh_per_km": 1.1070520374635322,
+      "efficient_period": 15,
+      "inefficient_period": 17,
+      "speed_difference_kmh": -0.22714986019256855
+    },
+    {
+      "difference_wh_per_km": 1.1035164730721903,
+      "efficient_period": 1,
+      "inefficient_period": 2,
+      "speed_difference_kmh": -0.3128559410453349
+    },
+    {
+      "difference_wh_per_km": 0.9074666290053557,
+      "efficient_period": 2,
+      "inefficient_period": 12,
+      "speed_difference_kmh": -0.5300843442491399
+    },
+    {
+      "difference_wh_per_km": 0.9006188528765016,
+      "efficient_period": 8,
+      "inefficient_period": 15,
+      "speed_difference_kmh": -1.803581994992065
+    },
+    {
+      "difference_wh_per_km": 0.8636264330438603,
+      "efficient_period": 7,
+      "inefficient_period": 12,
+      "speed_difference_kmh": 0.810189754416001
+    },
+    {
+      "difference_wh_per_km": 0.8373986865663152,
+      "efficient_period": 7,
+      "inefficient_period": 8,
+      "speed_difference_kmh": -1.0317790263487012
+    },
+    {
+      "difference_wh_per_km": 0.6429818150665199,
+      "efficient_period": 2,
+      "inefficient_period": 13,
+      "speed_difference_kmh": -0.2621174527318999
+    },
+    {
+      "difference_wh_per_km": 0.5991416191050245,
+      "efficient_period": 7,
+      "inefficient_period": 13,
+      "speed_difference_kmh": 1.078156645933241
+    },
+    {
+      "difference_wh_per_km": 0.563565084410671,
+      "efficient_period": 2,
+      "inefficient_period": 25,
+      "speed_difference_kmh": -1.3724678117961915
+    },
+    {
+      "difference_wh_per_km": 0.5493679928700317,
+      "efficient_period": 14,
+      "inefficient_period": 1,
+      "speed_difference_kmh": 0.574653170740568
+    },
+    {
+      "difference_wh_per_km": 0.5197248884491756,
+      "efficient_period": 7,
+      "inefficient_period": 25,
+      "speed_difference_kmh": -0.03219371313105057
+    },
+    {
+      "difference_wh_per_km": 0.4920355671392187,
+      "efficient_period": 26,
+      "inefficient_period": 8,
+      "speed_difference_kmh": 0.44128797064284697
+    },
+    {
+      "difference_wh_per_km": 0.4736475687146058,
+      "efficient_period": 2,
+      "inefficient_period": 24,
+      "speed_difference_kmh": -1.4635804742817484
+    },
+    {
+      "difference_wh_per_km": 0.4338190602907499,
+      "efficient_period": 24,
+      "inefficient_period": 12,
+      "speed_difference_kmh": 0.9334961300326086
+    },
+    {
+      "difference_wh_per_km": 0.42980737275311043,
+      "efficient_period": 7,
+      "inefficient_period": 24,
+      "speed_difference_kmh": -0.12330637561660751
+    },
+    {
+      "difference_wh_per_km": 0.4075913138132048,
+      "efficient_period": 24,
+      "inefficient_period": 8,
+      "speed_difference_kmh": -0.9084726507320937
+    },
+    {
+      "difference_wh_per_km": 0.36878797707089994,
+      "efficient_period": 6,
+      "inefficient_period": 20,
+      "speed_difference_kmh": -1.6854291305026656
+    },
+    {
+      "difference_wh_per_km": 0.3453631194270965,
+      "efficient_period": 7,
+      "inefficient_period": 26,
+      "speed_difference_kmh": -1.4730669969915482
+    },
+    {
+      "difference_wh_per_km": 0.3439015445946847,
+      "efficient_period": 25,
+      "inefficient_period": 12,
+      "speed_difference_kmh": 0.8423834675470516
+    },
+    {
+      "difference_wh_per_km": 0.3176737981171396,
+      "efficient_period": 25,
+      "inefficient_period": 8,
+      "speed_difference_kmh": -0.9995853132176507
+    },
+    {
+      "difference_wh_per_km": 0.2644848139388358,
+      "efficient_period": 13,
+      "inefficient_period": 12,
+      "speed_difference_kmh": -0.26796689151723996
+    },
+    {
+      "difference_wh_per_km": 0.17436176902207912,
+      "efficient_period": 26,
+      "inefficient_period": 25,
+      "speed_difference_kmh": 1.4408732838604976
+    },
+    {
+      "difference_wh_per_km": 0.16933424635191408,
+      "efficient_period": 24,
+      "inefficient_period": 13,
+      "speed_difference_kmh": 1.2014630215498485
+    },
+    {
+      "difference_wh_per_km": 0.08991751569606521,
+      "efficient_period": 24,
+      "inefficient_period": 25,
+      "speed_difference_kmh": 0.09111266248555694
+    },
+    {
+      "difference_wh_per_km": 0.08444425332601391,
+      "efficient_period": 26,
+      "inefficient_period": 24,
+      "speed_difference_kmh": 1.3497606213749407
+    },
+    {
+      "difference_wh_per_km": 0.07941673065584887,
+      "efficient_period": 25,
+      "inefficient_period": 13,
+      "speed_difference_kmh": 1.1103503590642916
+    },
+    {
+      "difference_wh_per_km": 0.043840195961495354,
+      "efficient_period": 2,
+      "inefficient_period": 7,
+      "speed_difference_kmh": -1.340274098665141
+    },
+    {
+      "difference_wh_per_km": 0.02622774647754511,
+      "efficient_period": 8,
+      "inefficient_period": 12,
+      "speed_difference_kmh": 1.8419687807647023
+    }
+  ],
+  "pareto_periods": [
+    1,
+    14,
+    16,
+    18,
+    19,
+    21,
+    28
+  ],
+  "slowest_period": 28
+}

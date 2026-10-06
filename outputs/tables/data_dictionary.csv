@@ -1,0 +1,12 @@
+column,canonical_field,type,unit,meaning,analysis_role,caveat,missing_count,constant,observed_min,observed_max,nonfinite_count
+timestamp,timestamp,datetime,UTC-05:00,Analysis timestamp in local competition time,Integration,Original preprocessing method undocumented,0,False,,,0
+car_velocity,speed_kmh,float,km/h,Vehicle speed,Explanatory,Seven quantized levels; sensor calibration undocumented,0,False,0.0,48.31529471999999,0
+car_trip,trip_km,float,km,Cumulative trip distance,Target denominator,Use interval increments; do not subtract origin from energy independently,0,False,4.475875219200034,19.1180937024002,0
+car_voltage,voltage_v,float,V,Electrical voltage,Descriptive and quality,Measurement location unknown; final near-zero values are shutdown,0,False,-0.0066902041688283,52.55489884823146,0
+car_current,current_a,float,A,Electrical current; positive means discharge,Target construction and descriptive,No regeneration; negative values are flagged artifacts until explained,0,False,-0.0596575908688663,24.8196104141361,0
+power,power_w,float,W,"Electrical power, numerically equal to voltage times current",Target construction and descriptive,Clip negative values to zero only on quality-valid support,0,False,-2.95210190206433,1229.67039728983,0
+gps_1,latitude,float,degrees (provisional),Likely latitude,GPS exploratory only,Coordinate order/reference system and finish line require confirmation,0,False,4.9540055,4.9553155,0
+gps_2,longitude,float,degrees (provisional),Likely longitude,GPS exploratory only,Stationary jitter; not the primary distance source,0,False,-74.021286,-74.01873616,0
+timestamp_original,timestamp_original,datetime text,UTC-05:00,Timestamp before preprocessing,Provenance,Matches timestamp in this file,0,False,,,0
+retroceso_detectado,retroceso_detectado,boolean text,none,Preprocessing reversal flag,Provenance,Exact preprocessing definition undocumented; constant False,0,True,,,0
+segmento,segmento,integer text,none,Preprocessing segment identifier,Provenance,Constant 1; not a lap identifier,0,True,,,0

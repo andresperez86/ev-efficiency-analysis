@@ -1,0 +1,117 @@
+    1: """Interval-based electrical accounting with matching energy/distance support."""
+       
+    1: from dataclasses import replace
+    1: from math import fsum, isfinite
+       
+    1: from .contracts import Config, Interval, Sample
+       
+    1: REQUIRED_FIELDS = ("speed_kmh", "trip_km", "voltage_v", "current_a", "power_w")
+       
+       
+    1: def wh_per_km(energy_wh: float, distance_km: float) -> float | None:
+  346:     if not all(isfinite(v) and v >= 0 for v in (energy_wh, distance_km)):
+    1:         raise ValueError("Energy and distance must be finite and nonnegative")
+   86:     return energy_wh / distance_km if distance_km > 0 else None
+       
+       
+    1: def make_intervals(samples: list[Sample], flags: list[set[str]], config: Config) -> list[Interval]:
+   33:     if len(samples) < 2 or len(flags) != len(samples):
+    2:         raise ValueError("Need at least two samples and one flag set per sample")
+   31:     origin = samples[0].timestamp
+   31:     intervals = []
+   83:     for i, (a, b) in enumerate(zip(samples, samples[1:])):
+   52:         dt = (b.timestamp - a.timestamp).total_seconds()
+   52:         combined = flags[i] | flags[i + 1]
+  140:         reasons = {f for f in combined if f in
+   32:                    {"shutdown_post_run", "invalid_voltage_state", "negative_speed", "power_vi_inconsistent"}
+  144:                    or f in {f"nonfinite_{field}" for field in REQUIRED_FIELDS}}
+   52:         if dt <= 0:
+    1:             reasons.add("nonpositive_timestamp_interval")
+   52:         if dt > config.max_gap_s:
+    1:             reasons.add("long_gap")
+   52:         if b.trip_km < a.trip_km:
+    1:             reasons.add("distance_reversal")
+  104:         intervals.append(Interval(a, b, (a.timestamp - origin).total_seconds(),
+   52:                                   (b.timestamp - origin).total_seconds(), not reasons,
+   52:                                   tuple(sorted(reasons)), config.moving_threshold_kmh))
+   31:     return intervals
+       
+       
+    1: def clip_interval(interval: Interval, start_s: float, end_s: float) -> Interval | None:
+   16:     lo, hi = max(interval.start_s, start_s), min(interval.end_s, end_s)
+   16:     if hi <= lo or interval.duration_s <= 0:
+    4:         return None
+   12:     span = interval.fraction_end - interval.fraction_start
+   24:     return replace(interval, start_s=lo, end_s=hi,
+   12:                    fraction_start=interval.fraction_start + span * (lo - interval.start_s) / interval.duration_s,
+   12:                    fraction_end=interval.fraction_start + span * (hi - interval.start_s) / interval.duration_s)
+       
+       
+    1: def integral(interval: Interval, field: str, *, consumption: bool = False) -> float:
+  262:     a = interval.value(field, interval.fraction_start, consumption=consumption)
+  262:     b = interval.value(field, interval.fraction_end, consumption=consumption)
+  262:     return (a + b) * .5 * interval.duration_s
+       
+       
+    1: def movement_parts(interval: Interval) -> list[tuple[Interval, bool]]:
+   46:     lo, hi = interval.fraction_start, interval.fraction_end
+   46:     v0, v1 = interval.left.speed_kmh, interval.right.speed_kmh
+   46:     cuts = [lo, hi]
+   46:     if v1 != v0:
+    1:         crossing = (interval.moving_threshold_kmh - v0) / (v1 - v0)
+    1:         if lo < crossing < hi:
+    1:             cuts.insert(1, crossing)
+   46:     parts = []
+   93:     for a, b in zip(cuts, cuts[1:]):
+   47:         start = interval.start_s + (a - lo) / (hi - lo) * interval.duration_s
+   47:         end = interval.start_s + (b - lo) / (hi - lo) * interval.duration_s
+   47:         part = replace(interval, start_s=start, end_s=end, fraction_start=a, fraction_end=b)
+   47:         parts.append((part, interval.value("speed_kmh", (a + b) / 2) > interval.moving_threshold_kmh))
+   46:     return parts
+       
+       
+    1: def account(intervals: list[Interval], samples: list[Sample]) -> dict:
+  105:     valid = [i for i in intervals if i.valid]
+  120:     duration = fsum(i.duration_s for i in valid)
+  120:     energy = fsum(integral(i, "power_w", consumption=True) for i in valid) / 3600
+  120:     distance = fsum(i.value("trip_km", i.fraction_end) - i.value("trip_km", i.fraction_start) for i in valid)
+   43:     moving_wh = stationary_wh = moving_distance = moving_s = stopped_s = 0.0
+   77:     for interval in valid:
+   69:         for part, moving in movement_parts(interval):
+   35:             e = integral(part, "power_w", consumption=True) / 3600
+   35:             if moving:
+   30:                 moving_wh += e
+   30:                 moving_s += part.duration_s
+   30:                 moving_distance += part.value("trip_km", part.fraction_end) - part.value("trip_km", part.fraction_start)
+                   else:
+    5:                 stationary_wh += e
+    5:                 stopped_s += part.duration_s
+   43:     def mean(field: str, consumption: bool = False) -> float | None:
+  436:         return fsum(integral(i, field, consumption=consumption) for i in valid) / duration if duration else None
+   43:     def extrema(field: str, kind) -> float | None:
+  580:         values = [i.value(field, f) for i in valid for f in (i.fraction_start, i.fraction_end)]
+  172:         return kind(values) if values else None
+  225:     raw = [i for i in intervals if i.duration_s > 0
+  120:            and isfinite(i.left.power_w) and isfinite(i.right.power_w)]
+   43:     voltage_mean = mean("voltage_v")
+  275:     voltage_variance = fsum(i.duration_s * (i.value("voltage_v", i.fraction_start)**2
+   34:                            + i.value("voltage_v", i.fraction_start)*i.value("voltage_v", i.fraction_end)
+  241:                            + i.value("voltage_v", i.fraction_end)**2) / 3 for i in valid) / duration if duration else None
+  253:     elapsed = max((i.end_s for i in intervals), default=0) - min((i.start_s for i in intervals), default=0)
+  731:     return {"consumed_wh": energy, "distance_km": distance,
+   86:             "wh_per_km": wh_per_km(energy, distance), "moving_wh": moving_wh,
+   86:             "moving_distance_km": moving_distance, "moving_wh_per_km": wh_per_km(moving_wh, moving_distance),
+  129:             "stationary_wh": stationary_wh, "moving_s": moving_s, "stopped_s": stopped_s,
+   86:             "valid_duration_s": duration, "elapsed_duration_s": elapsed,
+   43:             "coverage_fraction": duration / elapsed if elapsed > 0 else None,
+   86:             "valid_interval_count": len(valid), "excluded_interval_count": len(intervals) - len(valid),
+  143:             "raw_signed_wh_diagnostic": fsum(integral(i, "power_w") for i in raw) / 3600,
+   43:             "raw_diagnostic_note": "Includes shutdown and long gaps; not valid consumption or recovered energy.",
+   86:             "average_power_w": mean("power_w", True), "peak_power_w": extrema("power_w", max),
+   43:             "average_current_a": mean("current_a", True), "peak_current_a": extrema("current_a", max),
+   43:             "current_mean_note": "Time weighted, clipped at zero at samples; raw values retained in quality tables.",
+   43:             "voltage_mean_v": voltage_mean, "voltage_min_v": extrema("voltage_v", min),
+   43:             "voltage_max_v": extrema("voltage_v", max),
+   43:             "voltage_std_v": max(0, voltage_variance - voltage_mean**2)**.5 if duration else None,
+   43:             "average_speed_kmh": mean("speed_kmh"),
+   43:             "trip_increment_all_rows_km": samples[-1].trip_km - samples[0].trip_km if samples else None}

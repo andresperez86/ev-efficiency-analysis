@@ -1,0 +1,97 @@
+    1: """Nonoverlapping operating-period features; these periods are not laps."""
+       
+    1: from math import ceil, fsum, sqrt
+       
+    1: from .contracts import Config, Interval, Sample
+    1: from .metrics import account, clip_interval, integral, movement_parts
+       
+    1: EXPLANATORY_FEATURES = (
+           "average_speed_kmh", "median_speed_kmh", "max_speed_kmh", "speed_std_kmh",
+           "p10_speed_kmh", "p90_speed_kmh", "stopped_pct", "stop_count",
+           "acceleration_event_count", "acceleration_pct", "deceleration_event_count",
+           "deceleration_pct", "speed_0_16_pct", "speed_16_32_pct", "speed_32_40_pct",
+           "speed_40_plus_pct",
+       )
+       
+       
+    1: def weighted_quantile(values: list[tuple[float, float]], probability: float) -> float | None:
+   36:     if not values:
+>>>>>>         return None
+  108:     target = fsum(w for _, w in values) * probability
+   36:     cumulative = 0.0
+   36:     for value, weight in sorted(values):
+   36:         cumulative += weight
+   36:         if cumulative >= target:
+   36:             return value
+>>>>>>     return max(v for v, _ in values)
+       
+       
+    1: def band_duration(interval: Interval, low: float, high: float) -> float:
+   48:     a, b = interval.fraction_start, interval.fraction_end
+   48:     v0, v1 = interval.left.speed_kmh, interval.right.speed_kmh
+   48:     cuts = [a, b]
+   48:     if v0 != v1:
+>>>>>>         cuts += [f for bound in (low, high) if a < (f := (bound - v0) / (v1 - v0)) < b]
+   48:     cuts.sort()
+  204:     return fsum((right - left) / (b - a) * interval.duration_s for left, right in zip(cuts, cuts[1:])
+   60:                 if low <= interval.value("speed_kmh", (left + right) / 2) < high)
+       
+       
+    1: def build_windows(intervals: list[Interval], samples: list[Sample], config: Config) -> list[dict]:
+   32:     end = max((i.end_s for i in intervals), default=0)
+   10:     windows = []
+   22:     for index in range(ceil(end / config.window_s)):
+   12:         start, stop = index * config.window_s, min((index + 1) * config.window_s, end)
+   28:         parts = [p for i in intervals if (p := clip_interval(i, start, stop)) is not None]
+   24:         valid = [p for p in parts if p.valid]
+   12:         metrics = account(parts, [])
+   12:         duration = metrics["valid_duration_s"]
+   24:         midpoint_speeds = [(p.value("speed_kmh", (p.fraction_start + p.fraction_end) / 2), p.duration_s) for p in valid]
+   12:         mean = metrics["average_speed_kmh"]
+   96:         second = fsum(p.duration_s * (p.value("speed_kmh", p.fraction_start)**2
+   12:                       + p.value("speed_kmh", p.fraction_start)*p.value("speed_kmh", p.fraction_end)
+   84:                       + p.value("speed_kmh", p.fraction_end)**2) / 3 for p in valid) / duration if duration else 0
+   12:         counts = {"acceleration_event_count": 0, "deceleration_event_count": 0, "stop_count": 0}
+   12:         accel_s = decel_s = 0.0
+   12:         previous_state = None
+   12:         previous_moving = None
+   12:         previous_end = None
+   24:         for p in valid:
+   12:             if previous_end is not None and abs(p.start_s - previous_end) > 1e-6:
+>>>>>>                 previous_state = previous_moving = None
+   12:             original_dt = (p.right.timestamp - p.left.timestamp).total_seconds()
+   12:             acceleration = (p.right.speed_kmh - p.left.speed_kmh) / 3.6 / original_dt
+   12:             state = 1 if acceleration >= config.acceleration_threshold_mps2 else -1 if acceleration <= -config.acceleration_threshold_mps2 else 0
+   12:             if state == 1:
+>>>>>>                 accel_s += p.duration_s
+>>>>>>                 if previous_state != 1:
+>>>>>>                     counts["acceleration_event_count"] += 1
+   12:             elif state == -1:
+>>>>>>                 decel_s += p.duration_s
+>>>>>>                 if previous_state != -1:
+>>>>>>                     counts["deceleration_event_count"] += 1
+   24:             for _, moving in movement_parts(p):
+   12:                 if not moving and previous_moving is not False:
+    2:                     counts["stop_count"] += 1
+   12:                 previous_moving = moving
+   12:             previous_state, previous_end = state, p.end_s
+   12:         complete = abs(stop - start - config.window_s) < 1e-6
+   12:         eligible = complete and bool(duration) and duration / config.window_s >= config.minimum_window_coverage and metrics["distance_km"] > 0
+   60:         row = {"period_id": index, "start_s": start, "end_s": stop,
+   12:                "complete_window": complete, "model_eligible": eligible,
+   24:                "period_note": "Fixed-time operating period, not a lap", **metrics,
+   12:                "median_speed_kmh": weighted_quantile(midpoint_speeds, .5),
+   60:                "max_speed_kmh": max((p.value("speed_kmh", f) for p in valid for f in (p.fraction_start, p.fraction_end)), default=None),
+   12:                "speed_std_kmh": sqrt(max(0, second - mean**2)) if duration else None,
+   12:                "p10_speed_kmh": weighted_quantile(midpoint_speeds, .1),
+   12:                "p90_speed_kmh": weighted_quantile(midpoint_speeds, .9),
+   12:                "stopped_pct": 100 * metrics["stopped_s"] / duration if duration else None,
+   12:                "acceleration_pct": 100 * accel_s / duration if duration else None,
+   12:                "deceleration_pct": 100 * decel_s / duration if duration else None,
+   12:                "pace_seconds_per_km": duration / metrics["distance_km"] if metrics["distance_km"] else None,
+   12:                **counts}
+   72:         for label, low, high in (("speed_0_16_pct", 0, 16), ("speed_16_32_pct", 16, 32),
+   12:                                  ("speed_32_40_pct", 32, 40), ("speed_40_plus_pct", 40, float("inf"))):
+  144:             row[label] = 100 * fsum(band_duration(p, low, high) for p in valid) / duration if duration else None
+   12:         windows.append(row)
+   10:     return windows

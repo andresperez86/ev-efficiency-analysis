@@ -1,0 +1,47 @@
+    1: """Read source CSVs without changing their contents."""
+       
+    1: import csv
+    1: from datetime import datetime, timedelta, timezone
+    1: from pathlib import Path
+       
+    1: from .contracts import Sample
+       
+    1: COLUMNS = ("timestamp", "car_velocity", "car_trip", "car_voltage", "car_current",
+                  "power", "gps_1", "gps_2", "timestamp_original", "retroceso_detectado", "segmento")
+    1: NUMERIC = dict(zip(COLUMNS[1:8], ("speed_kmh", "trip_km", "voltage_v", "current_a",
+                                       "power_w", "latitude", "longitude")))
+    1: LOCAL_TIME = timezone(timedelta(hours=-5))
+       
+       
+    1: def read_records(path: Path) -> tuple[list[str], list[dict[str, str]]]:
+   12:     with path.open(encoding="utf-8-sig", newline="") as stream:
+    6:         reader = csv.DictReader(stream)
+    6:         columns = reader.fieldnames or []
+    6:         if set(COLUMNS) - set(columns):
+    1:             raise ValueError(f"Missing required columns: {sorted(set(COLUMNS) - set(columns))}")
+    5:         return columns, list(reader)
+       
+       
+    1: def load_csv(path: Path) -> list[Sample]:
+    4:     _, records = read_records(path)
+    3:     samples = []
+    8:     for row_number, row in enumerate(records, 2):
+    5:         try:
+    5:             timestamp = datetime.fromisoformat(row["timestamp"])
+    5:             if timestamp.tzinfo is None:
+    5:                 timestamp = timestamp.replace(tzinfo=LOCAL_TIME)
+                   else:
+>>>>>>                 timestamp = timestamp.astimezone(LOCAL_TIME)
+>>>>>>         except (TypeError, ValueError) as exc:
+>>>>>>             raise ValueError(f"Invalid timestamp at CSV row {row_number}") from exc
+    5:         values = {}
+   40:         for column, field in NUMERIC.items():
+   35:             try:
+   35:                 values[field] = float(row[column])
+    1:             except (TypeError, ValueError):
+    1:                 values[field] = float("nan")
+   10:         samples.append(Sample(row_number, timestamp, **values,
+    5:                               timestamp_original=row["timestamp_original"],
+    5:                               retroceso_detectado=row["retroceso_detectado"],
+    5:                               segmento=row["segmento"]))
+    3:     return samples

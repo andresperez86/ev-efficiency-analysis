@@ -1,0 +1,10 @@
+{
+  "reason": "No module named 'numpy'",
+  "status": "dependencies_unavailable",
+  "unavailable_methods": [
+    "mutual_information",
+    "random_forest",
+    "permutation_importance",
+    "SHAP"
+  ]
+}

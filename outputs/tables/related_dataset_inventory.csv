@@ -1,0 +1,8 @@
+filename,rows,columns,lap_identifier_found
+competition_results.csv,13,orden_salida|team|mejor_tiempo|acel_puntos|acel_penaliz|agilidad|orden_llegada|eficiencia_A|eficiencia_B|gp_penaliz|valor_parcial|posicion_final,False
+EIA_clean.csv,1917,timestamp|car_velocity|car_trip|car_voltage|car_current|power|gps_1|gps_2|timestamp_original|retroceso_detectado|segmento,False
+HELLMEC_clean.csv,3813,timestamp|car_velocity|car_trip|car_voltage|car_current|power|gps_1|gps_2|timestamp_original|retroceso_detectado|segmento,False
+KRATOS_clean.csv,624,timestamp|car_velocity|car_trip|car_voltage|car_current|power|gps_1|gps_2|timestamp_original|retroceso_detectado|segmento,False
+OMEGA_clean.csv,3121,timestamp|car_velocity|car_trip|car_voltage|car_current|power|gps_1|gps_2|timestamp_original|retroceso_detectado|segmento,False
+pascual bravo_clean.csv,1922,timestamp|car_velocity|car_trip|car_voltage|car_current|power|gps_1|gps_2|timestamp_original|retroceso_detectado|segmento,False
+Sabana_clean.csv,3117,timestamp|car_velocity|car_trip|car_voltage|car_current|power|gps_1|gps_2|Unnamed: 12|Unnamed: 13|Unnamed: 14|Unnamed: 15|Unnamed: 16|timestamp_original|retroceso_detectado|segmento,False

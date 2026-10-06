@@ -1,0 +1,66 @@
+"""Optional predictive importance, evaluated on forward contiguous blocks."""
+
+from statistics import fmean, pstdev
+
+from .features import EXPLANATORY_FEATURES
+
+
+def model_importance(windows: list[dict], seed: int = 42) -> dict:
+    eligible = [w for w in windows if w["model_eligible"]]
+    if len(eligible) < 20:
+        return {"status": "insufficient_periods", "eligible_periods": len(eligible), "minimum": 20}
+    try:
+        import numpy as np
+        from sklearn.ensemble import RandomForestRegressor
+        from sklearn.feature_selection import mutual_info_regression
+        from sklearn.inspection import permutation_importance
+        from sklearn.metrics import mean_absolute_error, r2_score
+        from sklearn.model_selection import TimeSeriesSplit
+    except ImportError as exc:
+        return {"status": "dependencies_unavailable", "reason": str(exc),
+                "unavailable_methods": ["mutual_information", "random_forest", "permutation_importance", "SHAP"]}
+    try:
+        import shap
+    except ImportError:
+        shap = None
+    x = np.array([[w[f] for f in EXPLANATORY_FEATURES] for w in eligible], dtype=float)
+    y = np.array([w["wh_per_km"] for w in eligible])
+    if not np.isfinite(x).all() or not np.isfinite(y).all():
+        raise ValueError("Nonfinite model matrix; quality gate failed")
+    folds, values = [], []
+    for fold, (train, test) in enumerate(TimeSeriesSplit(n_splits=3, gap=1).split(x)):
+        model = RandomForestRegressor(n_estimators=200, min_samples_leaf=3, max_depth=5,
+                                      random_state=seed, n_jobs=1)
+        model.fit(x[train], y[train])
+        predicted = model.predict(x[test])
+        baseline = np.full(len(test), np.mean(y[train]))
+        perm = permutation_importance(model, x[test], y[test], scoring="neg_mean_absolute_error",
+                                      n_repeats=30, random_state=seed, n_jobs=1)
+        mi = mutual_info_regression(x[train], y[train], random_state=seed, n_neighbors=min(3, len(train)-1))
+        shap_mean = None
+        if shap is not None:
+            explainer = shap.TreeExplainer(model, data=x[train][:100], feature_perturbation="interventional")
+            explanation = explainer.shap_values(x[test])
+            shap_mean = np.abs(explanation).mean(axis=0)
+        folds.append({"fold": fold, "train_n": len(train), "test_n": len(test),
+                      "train_end_period": eligible[train[-1]]["period_id"],
+                      "test_start_period": eligible[test[0]]["period_id"],
+                      "test_end_period": eligible[test[-1]]["period_id"],
+                      "mae_wh_per_km": float(mean_absolute_error(y[test], predicted)),
+                      "baseline_mae_wh_per_km": float(mean_absolute_error(y[test], baseline)),
+                      "r2": float(r2_score(y[test], predicted))})
+        values.append((mi, model.feature_importances_, perm.importances_mean, perm.importances_std, shap_mean))
+    importance = []
+    for j, feature in enumerate(EXPLANATORY_FEATURES):
+        importance.append({"feature": feature,
+                           "mutual_information_train_mean": fmean(float(v[0][j]) for v in values),
+                           "random_forest_mdi_mean": fmean(float(v[1][j]) for v in values),
+                           "permutation_mae_increase_mean": fmean(float(v[2][j]) for v in values),
+                           "permutation_between_fold_std": pstdev(float(v[2][j]) for v in values),
+                           "permutation_within_fold_std_mean": fmean(float(v[3][j]) for v in values),
+                           "shap_mean_abs_wh_per_km": fmean(float(v[4][j]) for v in values) if shap is not None else None})
+    return {"status": "computed", "folds": folds, "importance": importance,
+            "shap_status": "computed" if shap is not None else "dependency_unavailable",
+            "validation": "Expanding forward-time blocks; one-period gap; no random row split",
+            "interpretation": "Predictive importance, not causality; correlated proxies share importance. Small single-session sample.",
+            "beats_baseline_every_fold": all(f["mae_wh_per_km"] < f["baseline_mae_wh_per_km"] for f in folds)}

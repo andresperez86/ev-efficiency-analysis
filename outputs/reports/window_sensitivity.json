@@ -1,0 +1,29 @@
+[
+  {
+    "eligible_periods": 57,
+    "top_three_associations": [
+      "deceleration_pct",
+      "deceleration_event_count",
+      "stop_count"
+    ],
+    "window_s": 30.0
+  },
+  {
+    "eligible_periods": 29,
+    "top_three_associations": [
+      "stop_count",
+      "acceleration_pct",
+      "acceleration_event_count"
+    ],
+    "window_s": 60.0
+  },
+  {
+    "eligible_periods": 14,
+    "top_three_associations": [
+      "speed_0_16_pct",
+      "stopped_pct",
+      "speed_16_32_pct"
+    ],
+    "window_s": 120.0
+  }
+]

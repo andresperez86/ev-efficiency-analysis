@@ -1,0 +1,72 @@
+{
+  "method": "Python stdlib trace line coverage, not pytest-cov/branch coverage",
+  "modules": [
+    {
+      "module": "__init__",
+      "executed_lines": 2,
+      "missed_lines": 0,
+      "line_coverage_percent": 100.0
+    },
+    {
+      "module": "contracts",
+      "executed_lines": 55,
+      "missed_lines": 1,
+      "line_coverage_percent": 98.21428571428571
+    },
+    {
+      "module": "eda",
+      "executed_lines": 83,
+      "missed_lines": 15,
+      "line_coverage_percent": 84.6938775510204
+    },
+    {
+      "module": "features",
+      "executed_lines": 72,
+      "missed_lines": 10,
+      "line_coverage_percent": 87.8048780487805
+    },
+    {
+      "module": "figures",
+      "executed_lines": 88,
+      "missed_lines": 6,
+      "line_coverage_percent": 93.61702127659575
+    },
+    {
+      "module": "ingestion",
+      "executed_lines": 34,
+      "missed_lines": 3,
+      "line_coverage_percent": 91.89189189189189
+    },
+    {
+      "module": "metrics",
+      "executed_lines": 101,
+      "missed_lines": 0,
+      "line_coverage_percent": 100.0
+    },
+    {
+      "module": "modeling",
+      "executed_lines": 12,
+      "missed_lines": 50,
+      "line_coverage_percent": 19.35483870967742
+    },
+    {
+      "module": "pipeline",
+      "executed_lines": 153,
+      "missed_lines": 19,
+      "line_coverage_percent": 88.95348837209302
+    },
+    {
+      "module": "quality",
+      "executed_lines": 63,
+      "missed_lines": 5,
+      "line_coverage_percent": 92.6470588235294
+    },
+    {
+      "module": "reporting",
+      "executed_lines": 93,
+      "missed_lines": 1,
+      "line_coverage_percent": 98.93617021276596
+    }
+  ],
+  "optional_modeling_not_executed": true
+}

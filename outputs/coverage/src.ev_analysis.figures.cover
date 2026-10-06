@@ -1,0 +1,108 @@
+    1: """Dependency-free SVG EDA exports; no interactive plotting required."""
+       
+    1: from html import escape
+    1: from math import isfinite
+    1: from pathlib import Path
+       
+    1: from .quality import numeric_summary
+    1: from .eda import pearson
+       
+       
+    1: def frame(title: str, body: str, x_label: str = "", y_label: str = "", width: int = 900, height: int = 520) -> str:
+  172:     return (f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">'
+                   '<rect width="100%" height="100%" fill="white"/>'
+                   '<style>text{font:13px sans-serif;fill:#25334a}.title{font-size:20px;font-weight:bold}</style>'
+   86:             f'<text x="65" y="30" class="title">{escape(title)}</text>{body}'
+   86:             f'<text x="370" y="{height-10}">{escape(x_label)}</text>'
+   86:             f'<text transform="translate(18,320) rotate(-90)">{escape(y_label)}</text></svg>')
+       
+       
+    4: def xy_plot(path: Path, title: str, points: list[tuple[float, float]], x_label: str, y_label: str,
+    4:             *, line: bool = False, highlights: set[int] | None = None) -> None:
+  120:     finite = [(i, x, y) for i, (x, y) in enumerate(points) if isfinite(x) and isfinite(y)]
+   52:     if not finite:
+>>>>>>         path.write_text(frame(title, '<text x="100" y="100">No valid observations</text>'), encoding="utf-8")
+>>>>>>         return
+  292:     xmin, xmax = min(x for _, x, _ in finite), max(x for _, x, _ in finite)
+  292:     ymin, ymax = min(y for _, _, y in finite), max(y for _, _, y in finite)
+   52:     if xmax == xmin:
+   38:         xmax = xmin + 1
+   52:     if ymax == ymin:
+   50:         ymax = ymin + 1
+   52:     def position(x: float, y: float) -> tuple[float, float]:
+  380:         return 80 + (x - xmin) / (xmax - xmin) * 770, 450 - (y - ymin) / (ymax - ymin) * 390
+   52:     body = '<path d="M80 60V450H850" fill="none" stroke="#54657c"/>'
+  364:     for k in range(6):
+  312:         x = xmin + (xmax - xmin) * k / 5
+  312:         y = ymin + (ymax - ymin) * k / 5
+  312:         px, py = position(x, y)
+  312:         body += f'<text x="{px-15:.2f}" y="472">{x:.3g}</text><text x="28" y="{py+4:.2f}">{y:.3g}</text>'
+   52:     previous = None
+  120:     for index, x, y in finite:
+   68:         px, py = position(x, y)
+   68:         if line and previous is not None and index == previous[0] + 1:
+   16:             body += f'<line x1="{previous[1]:.2f}" y1="{previous[2]:.2f}" x2="{px:.2f}" y2="{py:.2f}" stroke="#2877b5" stroke-width="1"/>'
+   68:         color = '#e05a25' if highlights and index in highlights else '#2877b5'
+   68:         body += f'<circle cx="{px:.2f}" cy="{py:.2f}" r="{3 if line else 4}" fill="{color}" opacity=".7"><title>{escape(x_label)}={x:.6g}; {escape(y_label)}={y:.6g}</title></circle>'
+   68:         previous = (index, px, py)
+   52:     path.write_text(frame(title, body, x_label, y_label), encoding="utf-8")
+       
+       
+    1: def histogram(path: Path, title: str, values: list[float], unit: str) -> None:
+   46:     values = [v for v in values if isfinite(v)]
+   16:     if not values:
+>>>>>>         path.write_text(frame(title, '<text x="100" y="100">No valid observations</text>'), encoding="utf-8")
+>>>>>>         return
+   16:     low, high = min(values), max(values)
+   16:     if high == low:
+   14:         high = low + 1
+   16:     counts = [0] * 20
+   46:     for v in values:
+   30:         counts[min(19, int((v-low)/(high-low)*20))] += 1
+   16:     body = '<path d="M80 60V450H850" fill="none" stroke="#54657c"/>'
+  336:     for i, count in enumerate(counts):
+  320:         height = count / max(counts) * 360
+  320:         body += f'<rect x="{80+i*38.5:.2f}" y="{450-height:.2f}" width="36.5" height="{height:.2f}" fill="#2877b5"><title>bin {low+i*(high-low)/20:.4g} to {low+(i+1)*(high-low)/20:.4g}: {count}</title></rect>'
+   16:     body += f'<text x="80" y="475">{low:.4g}</text><text x="795" y="475">{high:.4g}</text><text x="28" y="80">{max(counts)}</text><text x="50" y="450">0</text>'
+   16:     path.write_text(frame(title, body, unit, "Sample count"), encoding="utf-8")
+       
+       
+    1: def boxplot(path: Path, title: str, groups: dict[str, list[float]], unit: str) -> None:
+   34:     summaries = [(name, numeric_summary(values)) for name, values in groups.items()]
+   34:     summaries = [(name, s) for name, s in summaries if s["finite_count"]]
+   16:     if not summaries:
+>>>>>>         path.write_text(frame(title, '<text x="100" y="100">No valid observations</text>'), encoding="utf-8")
+>>>>>>         return
+   84:     low, high = min(s["min"] for _, s in summaries), max(s["max"] for _, s in summaries)
+   16:     if high == low:
+   14:         high = low + 1
+   16:     def y(v: float) -> float:
+  222:         return 450 - (v-low)/(high-low)*380
+   16:     body = '<path d="M80 60V450H850" fill="none" stroke="#54657c"/>'
+   34:     for i, (name, s) in enumerate(summaries):
+   18:         x = 150 + i * 650 / max(1, len(summaries)-1)
+   36:         body += (f'<line x1="{x}" x2="{x}" y1="{y(s["min"])}" y2="{y(s["max"])}" stroke="#2877b5"/>'
+   18:                  f'<rect x="{x-30}" y="{y(s["p75"])}" width="60" height="{y(s["p25"])-y(s["p75"])}" fill="#bddbf0" stroke="#2877b5"/>'
+   18:                  f'<line x1="{x-30}" x2="{x+30}" y1="{y(s["median"])}" y2="{y(s["median"])}" stroke="#e05a25"/>'
+   18:                  f'<text x="{x-50}" y="480">{escape(name)}</text>')
+  112:     for k in range(6):
+   96:         v = low + (high-low)*k/5
+   96:         body += f'<text x="25" y="{y(v)+4}">{v:.3g}</text>'
+   16:     path.write_text(frame(title + ' (whiskers: min/max)', body, "Group", unit), encoding="utf-8")
+       
+       
+    1: def correlation_matrix(path: Path, windows: list[dict], fields: list[str]) -> None:
+    2:     size = 58
+    2:     body = ''
+   16:     for i, field in enumerate(fields):
+   14:         body += f'<text x="5" y="{180+i*size+32}" font-size="10">{escape(field)}</text>'
+   14:         body += f'<text transform="translate({230+i*size+30},170) rotate(-55)">{escape(field)}</text>'
+  112:         for j, other in enumerate(fields):
+  294:             value = pearson([w[field] for w in windows], [w[other] for w in windows])
+   98:             opacity = abs(value) if value is not None else 0
+   98:             color = '#dc5a39' if value is not None and value > 0 else '#2877b5'
+   98:             body += f'<rect x="{230+j*size}" y="{180+i*size}" width="{size}" height="{size}" fill="{color}" fill-opacity="{opacity:.3f}" stroke="#e0e0e0"/>'
+   98:             text = f'{value:.2f}' if value is not None else 'NA'
+   98:             body += f'<text x="{238+j*size}" y="{213+i*size}">{text}</text>'
+    6:     path.write_text(frame('Pearson correlation: eligible operating periods', body,
+    4:                           width=230+size*len(fields)+30, height=220+size*len(fields)), encoding="utf-8")

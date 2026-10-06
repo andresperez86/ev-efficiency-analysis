@@ -1,0 +1,182 @@
+    1: """CLI orchestration of the auditable EDA pipeline."""
+       
+    1: import argparse
+    1: import hashlib
+    1: import platform
+    1: from dataclasses import asdict, replace
+    1: from importlib import metadata
+    1: from math import isfinite
+    1: from pathlib import Path
+       
+    1: from .contracts import Config
+    1: from .ingestion import load_csv, read_records, NUMERIC
+    1: from .quality import flag_samples, profile, numeric_summary
+    1: from .metrics import make_intervals, account
+    1: from .features import build_windows, EXPLANATORY_FEATURES
+    1: from .eda import relationship_table, compare_periods, pearson, spearman
+    1: from .modeling import model_importance
+    1: from .reporting import write_json, write_csv, dictionary, findings
+    1: from .figures import xy_plot, histogram, boxplot, correlation_matrix
+       
+       
+    1: def run(source: Path, output: Path, config: Config = Config()) -> dict:
+    2:     source = source.resolve()
+    2:     output = output.resolve()
+    2:     if source.is_relative_to(output):
+>>>>>>         raise ValueError('Output directory cannot contain the source CSV')
+    2:     source_hash = hashlib.sha256(source.read_bytes()).hexdigest()
+    2:     columns, records = read_records(source)
+    2:     samples = load_csv(source)
+    2:     flags = flag_samples(samples, config)
+    2:     quality = profile(samples, columns, records, flags)
+    2:     intervals = make_intervals(samples, flags, config)
+    2:     metrics = account(intervals, samples)
+    2:     windows = build_windows(intervals, samples, config)
+    2:     relationships = relationship_table(windows, config.seed)
+    2:     comparisons = compare_periods(windows)
+    2:     modeling = model_importance(windows, config.seed)
+   10:     figures, tables, reports = (output / name for name in ('figures', 'tables', 'reports'))
+    8:     for folder in (figures, tables, reports):
+    6:         folder.mkdir(parents=True, exist_ok=True)
+    2:     write_json(reports / 'quality.json', quality)
+    2:     write_json(reports / 'metrics.json', metrics)
+    2:     write_json(reports / 'comparisons.json', comparisons)
+    2:     write_json(reports / 'modeling.json', modeling)
+    2:     write_csv(tables / 'data_dictionary.csv', dictionary(quality))
+    6:     write_csv(tables / 'sample_quality_flags.csv', [
+    4:         {**r, 'source_csv_row': s.source_row, 'flags': '|'.join(sorted(f))}
+    8:         for r, s, f in zip(records, samples, flags)])
+    6:     write_csv(tables / 'interval_ledger.csv', [
+    4:         {'left_csv_row': i.left.source_row, 'right_csv_row': i.right.source_row,
+    2:          'start': i.left.timestamp.isoformat(), 'end': i.right.timestamp.isoformat(),
+    2:          'duration_s': i.duration_s, 'accepted': i.valid, 'exclusion_reasons': '|'.join(i.reasons),
+    2:          'left_flags': '|'.join(sorted(a)), 'right_flags': '|'.join(sorted(b)),
+    2:          'negative_power_clipped': i.left.power_w < 0 or i.right.power_w < 0,
+    2:          'trip_increment_km': i.right.trip_km-i.left.trip_km}
+    6:         for i, a, b in zip(intervals, flags, flags[1:])])
+    2:     write_csv(tables / 'operating_periods.csv', windows)
+    2:     write_csv(tables / 'candidate_associations.csv', relationships)
+    4:     mostly_moving = [w for w in windows if w['model_eligible'] and w['stopped_pct'] <= 5]
+    2:     moving_relationships = relationship_table(mostly_moving, config.seed)
+    2:     write_csv(tables / 'candidate_associations_mostly_moving.csv', moving_relationships)
+    2:     write_json(reports / 'mostly_moving_comparisons.json', compare_periods(mostly_moving))
+   16:     write_csv(tables / 'summary_statistics.csv', [{'variable': name, **stats} for name, stats in quality['numeric'].items()])
+    4:     eligible = [w for w in windows if w['model_eligible']]
+    2:     fields = ['wh_per_km', *EXPLANATORY_FEATURES]
+    2:     matrix_rows = []
+   36:     for a in fields:
+  612:         for b in fields:
+ 1156:             matrix_rows.append({'variable_a': a, 'variable_b': b, 'n': len(eligible),
+ 1734:                                 'pearson': pearson([w[a] for w in eligible], [w[b] for w in eligible]),
+ 1734:                                 'spearman': spearman([w[a] for w in eligible], [w[b] for w in eligible])})
+    2:     write_csv(tables / 'correlation_matrix.csv', matrix_rows)
+    4:     write_csv(tables / 'pace_matched_pairs.csv', comparisons.get('pace_matched_pairs_2kmh', []),
+    2:               ['efficient_period', 'inefficient_period', 'difference_wh_per_km', 'speed_difference_kmh'])
+    2:     if modeling['status'] == 'computed':
+>>>>>>         write_csv(tables / 'predictive_importance.csv', modeling['importance'])
+>>>>>>         write_csv(tables / 'validation_folds.csv', modeling['folds'])
+    2:     sensitivity = []
+    8:     for seconds in (30.0, 60.0, 120.0):
+    6:         period_config = replace(config, window_s=seconds)
+    6:         period_windows = build_windows(intervals, samples, period_config)
+    6:         assoc = relationship_table(period_windows, config.seed)
+    6:         write_csv(tables / f'associations_{int(seconds)}s.csv', assoc)
+    6:         write_csv(tables / f'periods_{int(seconds)}s.csv', period_windows)
+   24:         sensitivity.append({'window_s': seconds, 'eligible_periods': sum(w['model_eligible'] for w in period_windows),
+  102:                             'top_three_associations': [r['feature'] for r in assoc if r['association_score'] is not None][:3]})
+    6:     alternative = [replace(i, valid=False, reasons=tuple(sorted(set(i.reasons) | {'negative_artifact_sensitivity'})))
+    6:                    if i.left.power_w < 0 or i.right.power_w < 0 or i.left.current_a < 0 or i.right.current_a < 0 else i for i in intervals]
+    2:     write_json(reports / 'negative_artifact_sensitivity.json', account(alternative, samples))
+    2:     write_json(reports / 'window_sensitivity.json', sensitivity)
+    6:     write_json(reports / 'shutdown_threshold_sensitivity.json', [
+   18:         {'shutdown_voltage_v': threshold, **account(make_intervals(samples,
+    6:             flag_samples(samples, replace(config, shutdown_voltage_v=threshold)),
+   12:             replace(config, shutdown_voltage_v=threshold)), samples)}
+   10:         for threshold in (1.0, 10.0, 40.0)])
+    8:     active_elapsed = sum(max(i.duration_s, 0) for i, a, b in zip(intervals, flags, flags[1:])
+    2:                          if 'shutdown_post_run' not in a | b)
+    4:     write_json(reports / 'coverage.json', {'full_record': metrics['coverage_fraction'],
+    2:                'non_shutdown_interval_duration_s': active_elapsed,
+    2:                'valid_fraction_of_non_shutdown_intervals': metrics['valid_duration_s']/active_elapsed if active_elapsed else None})
+    2:     inventory = []
+    4:     for file in sorted(source.parent.glob('*.csv')):
+    2:         import csv
+    4:         with file.open(encoding='utf-8-sig', newline='') as stream:
+    2:             reader = csv.reader(stream)
+    2:             header = next(reader, [])
+    8:             count = sum(1 for _ in reader)
+    4:         inventory.append({'filename': file.name, 'rows': count, 'columns': '|'.join(header),
+   26:                           'lap_identifier_found': any('lap' in c.lower() or 'vuelta' in c.lower() for c in header)})
+    2:     write_csv(tables / 'related_dataset_inventory.csv', inventory)
+   16:     for column, field in NUMERIC.items():
+   42:         values = [getattr(s, field) for s in samples]
+   84:         unit = next(r['unit'] for r in dictionary(quality) if r['column'] == column)
+   14:         histogram(figures / f'histogram_{column}.svg', f'{column}: all recorded samples', values, unit)
+   14:         boxplot(figures / f'boxplot_{column}.svg', f'{column}: raw distribution', {'all samples': values}, unit)
+   28:         xy_plot(figures / f'timeseries_{column}.svg', f'{column}: raw telemetry; shutdown retained',
+   42:                 [((s.timestamp-samples[0].timestamp).total_seconds(), getattr(s, field)) for s in samples],
+   14:                 'Elapsed competition time (s)', unit, line=True)
+    4:     xy_plot(figures / 'gps_trace_provisional.svg', 'Provisional GPS track (coordinate order unconfirmed)',
+    6:             [(s.longitude, s.latitude) for s in samples], 'Likely longitude (degrees)', 'Likely latitude (degrees)', line=True)
+   34:     for field in EXPLANATORY_FEATURES:
+   64:         xy_plot(figures / f'efficiency_vs_{field}.svg', f'Wh/km versus {field}: operating periods',
+   64:                 [(w[field], w['wh_per_km']) for w in eligible], field, 'Wh/km')
+    2:     pareto_ids = set(comparisons.get('pareto_periods', []))
+    4:     xy_plot(figures / 'efficiency_vs_pace.svg', 'Efficiency versus pace; orange = Pareto periods',
+    4:             [(w['average_speed_kmh'], w['wh_per_km']) for w in eligible], 'Average speed (km/h)', 'Wh/km',
+    4:             highlights={i for i, w in enumerate(eligible) if w['period_id'] in pareto_ids})
+    4:     xy_plot(figures / 'efficiency_over_time.svg', 'Period efficiency over competition time',
+    4:             [(w['start_s'], w['wh_per_km']) for w in eligible], 'Elapsed time (s)', 'Wh/km')
+    4:     histogram(figures / 'histogram_wh_per_km.svg', 'Eligible-period efficiency', [w['wh_per_km'] for w in eligible], 'Wh/km')
+    4:     sorted_periods = sorted(eligible, key=lambda w: w['wh_per_km'])
+    2:     n = max(1, len(sorted_periods)//4)
+    4:     boxplot(figures / 'efficient_inefficient_pace.svg', 'Pace by efficiency quartile',
+    6:             {'efficient': [w['average_speed_kmh'] for w in sorted_periods[:n]],
+    6:              'inefficient': [w['average_speed_kmh'] for w in sorted_periods[-n:]]}, 'km/h')
+    4:     correlation_matrix(figures / 'correlation_matrix.svg', eligible,
+    2:                        ['wh_per_km', 'average_speed_kmh', 'speed_std_kmh', 'stopped_pct',
+                               'acceleration_pct', 'deceleration_pct', 'speed_40_plus_pct'])
+    2:     packages = {}
+   12:     for name in ('numpy', 'scikit-learn', 'shap', 'pytest', 'pytest-cov'):
+   10:         try:
+   10:             packages[name] = metadata.version(name)
+    8:         except metadata.PackageNotFoundError:
+    8:             packages[name] = None
+    4:     write_json(reports / 'manifest.json', {'source': str(source), 'source_sha256': source_hash,
+    2:                'config': asdict(config), 'python': platform.python_version(), 'packages': packages,
+    2:                'analysis_version': '0.1.0', 'source_preserved': source_hash == hashlib.sha256(source.read_bytes()).hexdigest(),
+    2:                'modeling_status': modeling['status'], 'lap_reconstruction': 'not_implemented_pending_GPS_and_finish_line_confirmation',
+    2:                'figure_backend': 'deterministic SVG; matplotlib unavailable',
+    2:                'units': {'speed': 'km/h', 'trip': 'km', 'power': 'W', 'voltage': 'V', 'current': 'A', 'time': 'UTC-05:00'}})
+    2:     report_text = findings(quality, metrics, comparisons, relationships, modeling, sensitivity)
+    8:     report_text += ('\n## Mostly-moving sensitivity\n\n'
+                          'This optional descriptive subset accepts periods with at most 5% stopped time; it is not a confirmed competitive pace floor.\n\n'
+    2:                    f'Eligible periods: {len(mostly_moving)}. Leading associations: '
+   14:                    + ', '.join('{} (Pearson={}, Spearman={})'.format(r['feature'], r['pearson'], r['spearman']) for r in moving_relationships[:5])
+    2:                    + '.\n\nThe lowest raw period Wh/km can occur in terminal coasting. Inspect pace and operating state before interpreting efficiency rankings. Window-size sensitivity shows whether candidate ordering is stable.\n')
+    2:     (reports / 'findings.md').write_text(report_text, encoding='utf-8')
+    2:     if source_hash != hashlib.sha256(source.read_bytes()).hexdigest():
+>>>>>>         raise RuntimeError('Source changed during analysis')
+    4:     return {'quality': quality, 'metrics': metrics, 'relationships': relationships,
+    2:             'comparisons': comparisons, 'modeling': modeling}
+       
+       
+    1: def main() -> None:
+>>>>>>     parser = argparse.ArgumentParser(description=__doc__)
+>>>>>>     parser.add_argument('--source', type=Path, required=True)
+>>>>>>     parser.add_argument('--output', type=Path, default=Path('outputs'))
+>>>>>>     parser.add_argument('--window-s', type=float, default=60)
+>>>>>>     parser.add_argument('--max-gap-s', type=float, default=5)
+>>>>>>     parser.add_argument('--moving-threshold-kmh', type=float, default=1)
+>>>>>>     parser.add_argument('--minimum-voltage-v', type=float, default=1)
+>>>>>>     parser.add_argument('--shutdown-voltage-v', type=float, default=10)
+>>>>>>     args = parser.parse_args()
+>>>>>>     result = run(args.source, args.output, Config(window_s=args.window_s, max_gap_s=args.max_gap_s,
+>>>>>>                  moving_threshold_kmh=args.moving_threshold_kmh, minimum_voltage_v=args.minimum_voltage_v,
+>>>>>>                  shutdown_voltage_v=args.shutdown_voltage_v))
+>>>>>>     print(f"Consumed Wh: {result['metrics']['consumed_wh']:.6f}; Wh/km: {result['metrics']['wh_per_km']}")
+>>>>>>     print(f"Predictive modeling: {result['modeling']['status']}; artifacts: {args.output.resolve()}")
+       
+       
+    1: if __name__ == '__main__':
+>>>>>>     main()

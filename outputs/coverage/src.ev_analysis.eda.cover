@@ -1,0 +1,114 @@
+    1: """Descriptive relationships and efficiency/performance comparisons."""
+       
+    1: from math import fsum, isfinite, sqrt
+    1: from random import Random
+    1: from statistics import fmean, median
+       
+    1: from .features import EXPLANATORY_FEATURES
+       
+       
+    1: def pearson(x: list[float], y: list[float]) -> float | None:
+ 1515:     if len(x) != len(y):
+    1:         raise ValueError("Correlation vectors must have equal lengths")
+ 3099:     pairs = [(a, b) for a, b in zip(x, y) if isfinite(a) and isfinite(b)]
+ 1514:     if len(pairs) < 3:
+ 1479:         return None
+   35:     a, b = zip(*pairs)
+   35:     ma, mb = fmean(a), fmean(b)
+  507:     va, vb = fsum((v - ma)**2 for v in a), fsum((v - mb)**2 for v in b)
+   35:     if va == 0 or vb == 0:
+    1:         return None
+  266:     return max(-1.0, min(1.0, fsum((u - ma)*(v - mb) for u, v in pairs) / sqrt(va * vb)))
+       
+       
+    1: def ranks(values: list[float]) -> list[float]:
+ 1318:     ordered = sorted(range(len(values)), key=values.__getitem__)
+ 1318:     result = [0.0] * len(values)
+ 1318:     start = 0
+ 2798:     while start < len(ordered):
+ 1480:         end = start + 1
+ 1482:         while end < len(ordered) and values[ordered[end]] == values[ordered[start]]:
+    2:             end += 1
+ 2962:         for i in ordered[start:end]:
+ 1482:             result[i] = (start + end + 1) / 2
+ 1480:         start = end
+ 1318:     return result
+       
+       
+    1: def spearman(x: list[float], y: list[float]) -> float | None:
+  755:     if len(x) != len(y):
+>>>>>>         raise ValueError("Correlation vectors must have equal lengths")
+ 1496:     pairs = [(a, b) for a, b in zip(x, y) if isfinite(a) and isfinite(b)]
+  755:     if not pairs:
+   96:         return None
+  659:     a, b = zip(*pairs)
+  659:     return pearson(ranks(list(a)), ranks(list(b)))
+       
+       
+    1: def relationship_table(windows: list[dict], seed: int = 42) -> list[dict]:
+   28:     eligible = [w for w in windows if w["model_eligible"]]
+   11:     table = []
+  187:     for field in EXPLANATORY_FEATURES:
+  656:         pairs = [(w[field], w["wh_per_km"], w["period_id"]) for w in eligible
+  320:                  if isinstance(w.get(field), (int, float)) and isfinite(w[field])]
+  496:         x, y = [p[0] for p in pairs], [p[1] for p in pairs]
+  176:         r, rho = pearson(x, y), spearman(x, y)
+               # Exploratory moving-block bootstrap; never cross an excluded period.
+  304:         blocks = [pairs[i:i+3] for i in range(max(0, len(pairs)-2))
+   64:                   if pairs[i+2][2] - pairs[i][2] == 2]
+  176:         bootstrap = []
+  176:         rng = Random(seed)
+  176:         if len(pairs) >= 9 and blocks:
+>>>>>>             for _ in range(300):
+>>>>>>                 draw = []
+>>>>>>                 while len(draw) < len(pairs):
+>>>>>>                     draw.extend(rng.choice(blocks))
+>>>>>>                 draw = draw[:len(pairs)]
+>>>>>>                 value = spearman([p[0] for p in draw], [p[1] for p in draw])
+>>>>>>                 if value is not None:
+>>>>>>                     bootstrap.append(value)
+  176:         bootstrap.sort()
+  224:         score = fmean(abs(v) for v in (r, rho) if v is not None) if r is not None or rho is not None else None
+  352:         table.append({"feature": field, "n": len(pairs), "pearson": r, "spearman": rho,
+  176:                       "association_score": score,
+  176:                       "direction_disagrees": r is not None and rho is not None and r * rho < 0,
+  176:                       "spearman_block_bootstrap_p025": bootstrap[int(.025*(len(bootstrap)-1))] if bootstrap else None,
+  176:                       "spearman_block_bootstrap_p975": bootstrap[int(.975*(len(bootstrap)-1))] if bootstrap else None,
+  176:                       "interpretation": "Descriptive association; no causal claim; exploratory bootstrap, not multiplicity adjusted"})
+  187:     table.sort(key=lambda row: row["association_score"] if row["association_score"] is not None else -1, reverse=True)
+  187:     for i, row in enumerate(table, 1):
+  176:         row["descriptive_rank"] = i
+   11:     return table
+       
+       
+    1: def pareto_front(windows: list[dict]) -> list[int]:
+   29:     return [w["period_id"] for w in windows if not any(
+   27:         v["wh_per_km"] <= w["wh_per_km"] and v["average_speed_kmh"] >= w["average_speed_kmh"]
+   10:         and (v["wh_per_km"] < w["wh_per_km"] or v["average_speed_kmh"] > w["average_speed_kmh"])
+   32:         for v in windows)]
+       
+       
+    1: def compare_periods(windows: list[dict]) -> dict:
+    8:     eligible = [w for w in windows if w["model_eligible"]]
+    4:     if not eligible:
+>>>>>>         return {"eligible_count": 0}
+    8:     ordered = sorted(eligible, key=lambda w: w["wh_per_km"])
+    4:     size = max(1, len(ordered) // 4)
+    4:     def summarize(group: list[dict]) -> dict:
+   88:         return {f: median([w[f] for w in group]) for f in ("wh_per_km", "average_speed_kmh", "stopped_pct", "speed_std_kmh", "acceleration_pct")}
+           # Same-session pace matching is exploratory and does not control course position.
+    4:     pairs = []
+    8:     for i, a in enumerate(eligible):
+    4:         for b in eligible[i+1:]:
+>>>>>>             if abs(a["average_speed_kmh"] - b["average_speed_kmh"]) <= 2:
+>>>>>>                 efficient, inefficient = sorted((a, b), key=lambda w: w["wh_per_km"])
+>>>>>>                 pairs.append({"efficient_period": efficient["period_id"], "inefficient_period": inefficient["period_id"],
+>>>>>>                               "difference_wh_per_km": inefficient["wh_per_km"] - efficient["wh_per_km"],
+>>>>>>                               "speed_difference_kmh": inefficient["average_speed_kmh"] - efficient["average_speed_kmh"]})
+    8:     return {"eligible_count": len(eligible), "most_efficient_period": ordered[0]["period_id"],
+    4:             "least_efficient_period": ordered[-1]["period_id"],
+    8:             "fastest_period": max(eligible, key=lambda w: w["average_speed_kmh"])["period_id"],
+    8:             "slowest_period": min(eligible, key=lambda w: w["average_speed_kmh"])["period_id"],
+    4:             "pareto_periods": pareto_front(eligible), "efficient_quartile_medians": summarize(ordered[:size]),
+    4:             "inefficient_quartile_medians": summarize(ordered[-size:]),
+    4:             "pace_matched_pairs_2kmh": sorted(pairs, key=lambda p: p["difference_wh_per_km"], reverse=True)}

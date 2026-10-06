@@ -1,0 +1,67 @@
+    1: """Typed input, policy, and interval contracts."""
+       
+    1: from dataclasses import dataclass
+    1: from datetime import datetime
+    1: from math import isfinite
+       
+       
+    3: @dataclass(frozen=True)
+    2: class Config:
+    1:     max_gap_s: float = 5.0
+    1:     moving_threshold_kmh: float = 1.0
+    1:     minimum_voltage_v: float = 1.0
+    1:     shutdown_voltage_v: float = 10.0
+    1:     window_s: float = 60.0
+    1:     minimum_window_coverage: float = 0.9
+    1:     acceleration_threshold_mps2: float = 0.5
+    1:     seed: int = 42
+       
+    1:     def __post_init__(self) -> None:
+   66:         positive = (self.max_gap_s, self.minimum_voltage_v, self.shutdown_voltage_v, self.window_s,
+   33:                     self.acceleration_threshold_mps2)
+  226:         if any(not isfinite(v) or v <= 0 for v in positive):
+    1:             raise ValueError("Gap, voltage, window and acceleration thresholds must be positive.")
+   32:         if not isfinite(self.moving_threshold_kmh) or self.moving_threshold_kmh < 0:
+    1:             raise ValueError("Moving threshold must be finite and nonnegative.")
+   31:         if not 0 < self.minimum_window_coverage <= 1:
+>>>>>>             raise ValueError("Window coverage must be in (0, 1].")
+       
+       
+    3: @dataclass(frozen=True)
+    2: class Sample:
+    1:     source_row: int
+    1:     timestamp: datetime
+    1:     speed_kmh: float
+    1:     trip_km: float
+    1:     voltage_v: float
+    1:     current_a: float
+    1:     power_w: float
+    1:     latitude: float
+    1:     longitude: float
+    1:     timestamp_original: str
+    1:     retroceso_detectado: str
+    1:     segmento: str
+       
+       
+    3: @dataclass(frozen=True)
+    2: class Interval:
+    1:     left: Sample
+    1:     right: Sample
+    1:     start_s: float
+    1:     end_s: float
+    1:     valid: bool
+    1:     reasons: tuple[str, ...]
+    1:     moving_threshold_kmh: float
+           # Fractions locate clipped windows within the original interval.
+    1:     fraction_start: float = 0.0
+    1:     fraction_end: float = 1.0
+       
+    2:     @property
+    2:     def duration_s(self) -> float:
+  597:         return self.end_s - self.start_s
+       
+    1:     def value(self, field: str, fraction: float, *, consumption: bool = False) -> float:
+ 1239:         a, b = getattr(self.left, field), getattr(self.right, field)
+ 1239:         if consumption:
+  274:             a, b = max(a, 0.0), max(b, 0.0)
+ 1239:         return a + (b - a) * fraction

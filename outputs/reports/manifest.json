@@ -1,0 +1,35 @@
+{
+  "analysis_version": "0.1.0",
+  "config": {
+    "acceleration_threshold_mps2": 0.5,
+    "max_gap_s": 5,
+    "minimum_voltage_v": 1,
+    "minimum_window_coverage": 0.9,
+    "moving_threshold_kmh": 1,
+    "seed": 42,
+    "shutdown_voltage_v": 10,
+    "window_s": 60
+  },
+  "figure_backend": "deterministic SVG; matplotlib unavailable",
+  "lap_reconstruction": "not_implemented_pending_GPS_and_finish_line_confirmation",
+  "modeling_status": "dependencies_unavailable",
+  "packages": {
+    "numpy": null,
+    "pytest": "9.1.1",
+    "pytest-cov": null,
+    "scikit-learn": null,
+    "shap": null
+  },
+  "python": "3.13.16",
+  "source": "C:\\Users\\ANDR\u00c9S P\u00c9REZ\\Projects\\ResultadosGP_limpios\\datos_limpios\\EIA_clean.csv",
+  "source_preserved": true,
+  "source_sha256": "33cebf917f2008f5f666dc5763f5cfc90d6409222b776ef988f33f75781ade78",
+  "units": {
+    "current": "A",
+    "power": "W",
+    "speed": "km/h",
+    "time": "UTC-05:00",
+    "trip": "km",
+    "voltage": "V"
+  }
+}
